@@ -1,0 +1,46 @@
+[
+	{
+		"title": "teclado",
+		"description": "dispisitivo para escribir",
+		"price": 150,
+		"category": "accesorio",
+		"thumbnail": "url",
+		"code": 158,
+		"stock": 100,
+		"status": true,
+		"id": 1
+	},
+	{
+		"title": "joystick",
+		"description": "un control romoto para jugar",
+		"price": 300,
+		"category": "accesorio",
+		"thumbnail": "url",
+		"code": 12,
+		"stock": 100,
+		"status": true,
+		"id": 2
+	},
+	{
+		"title": "mouse",
+		"description": "dispositivo para navergar por el pc",
+		"price": 350,
+		"category": "accesorio",
+		"thumbnail": "url",
+		"code": 12,
+		"stock": 100,
+		"status": true,
+		"id": 3
+	},
+	{
+		"title": "joystick",
+		"description": "dispositivo",
+		"price": 16000,
+		"category": "accesorio",
+		"thumbnail": "url",
+		"code": 8758,
+		"stock": 100,
+		"status": true,
+		"id": 4
+	}
+]

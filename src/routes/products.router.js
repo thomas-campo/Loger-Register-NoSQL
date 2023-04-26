@@ -8,7 +8,7 @@ const router = Router();
 
 const product = await productManager.getProducts();
 
-router.get('/', async (req,res) => {
+router.get('/', async (req,res) => {//listo
     try{
         const maxProducts = req.query.limit;
         const products = await product
@@ -25,7 +25,7 @@ router.get('/', async (req,res) => {
     }
 })
 
-router.get('/:pid', async (req,res) => {
+router.get('/:pid', async (req,res) => {//listo
     try{
         const productsId = req.params.pid;
         console.log(productsId)
@@ -39,7 +39,7 @@ router.get('/:pid', async (req,res) => {
     }
 })
 
-router.post('/', async (req,res)=>{
+router.post('/', async (req,res)=>{//listo
     try{
         if(!req.body.title ||
             !req.body.description ||
@@ -73,7 +73,7 @@ router.post('/', async (req,res)=>{
 
 })
 
-router.put('/:pid', async (req,res) => {
+router.put('/:pid', async (req,res) => {//listo
     try{
         const productoId = req.params.pid;
 
@@ -90,7 +90,7 @@ router.put('/:pid', async (req,res) => {
         
         const product = new Product(title, description, price, category, thumbnails, code, stock, status);
         const updatedProduct = await productManager.updateProduct(productoId, product);
-        res.json(updatedProduct);
+        res.send({status:"success",message:"producto actualizado"});
     }catch(err){
         const productoId = req.params.pid;
         console.log(`error en actualizar el producto ${productoId}`)
@@ -98,12 +98,11 @@ router.put('/:pid', async (req,res) => {
     }
 })
 
-router.delete('/:pid', async (req,res) =>{
+router.delete('/:pid', async (req,res) =>{//listo
     try{
         const productId = req.params.pid;
-        const productDelete = await productManager.deleteProduct(productId)
-        res.send(productDelete);
-        console.log(productDelete)
+        await productManager.deleteProduct(productId)
+        res.send({status:"success",message:"producto eliminado"});
     }catch(err){
         console.log(err)
     }

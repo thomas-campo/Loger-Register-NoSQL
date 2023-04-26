@@ -1,9 +1,11 @@
 import ProductManager from "./src/manager/ProductManager.js";
+import CartManager from "./src/manager/CartManager.js";
 
 const productManager = new ProductManager();
+const cartManager = new CartManager();
 
 const context = async() =>{
-    const test  = await productManager.getProducts();
+    //const test  = await productManager.getProducts();
     
     let productoDePrueba = {
         title:"teclado",
@@ -38,20 +40,21 @@ const context = async() =>{
         status:true
     }
 
+    await cartManager.getProductByCartId(2);
 
-    await productManager.addProduct(productoDePrueba);
-    await productManager.addProduct(productoDePrueba2);
-    await productManager.addProduct(productoDePrueba3);
+    //await productManager.addProduct(productoDePrueba);
+    //await productManager.addProduct(productoDePrueba2);
+    //await productManager.addProduct(productoDePrueba3);
     
-    // await productManager.getProductById(3)//listo
-    // await productManager.getProducts()
-    // await productManager.updateProduct(1,{
+    //await productManager.getProductById(3)//listo
+    //await productManager.getProducts()
+    //await productManager.updateProduct(1,{
     //     title:"joystick",
     //     code: 1200000,
     //     stock: 12345
     // });
-    //await productManager.deleteProduct(5);//listo
-    console.log(test)
+    //await productManager.deleteProduct(4);//listo
+    //console.log(test)
 }
 
 context();

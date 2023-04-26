@@ -64,7 +64,6 @@ export default class ProductManager{
             if(fs.existsSync(this.path)){
                 const data = await fs.promises.readFile(this.path,'utf-8');
                 const products = JSON.parse(data);
-                //products[id-1]; esta es la posicion del producto 
                 const nuevoArray = products.map( product => {
                     if(product.id == idObj){
                        return product = Object.assign(products[idObj-1],obj);
@@ -84,10 +83,10 @@ export default class ProductManager{
             if(fs.existsSync(this.path)){
                 const data = await fs.promises.readFile(this.path,'utf-8');
                 const products = JSON.parse(data);
-                const productDelete = products.filter(product => product.id == id);
-                const productDeleteArray = products.filter(product => product.id !== id);
+                console.log(id);
+                const productDeleteArray = products.filter(product => product.id != id);
+                console.log(productDeleteArray);
                 await fs.promises.writeFile(this.path,JSON.stringify(productDeleteArray,null,'\t'));
-                return console.log(`se elimino correctamente el producto: ${productDelete.title}`)
             }
         }catch(error){
             console.log(error)

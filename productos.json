@@ -22,25 +22,14 @@
 		"id": 2
 	},
 	{
-		"title": "mouse",
+		"title": "teclado",
 		"description": "dispositivo para navergar por el pc",
-		"price": 350,
+		"price": 12345,
 		"category": "accesorio",
 		"thumbnail": "url",
-		"code": 12,
+		"code": 1000,
 		"stock": 100,
 		"status": true,
 		"id": 3
-	},
-	{
-		"title": "joystick",
-		"description": "dispositivo",
-		"price": 16000,
-		"category": "accesorio",
-		"thumbnail": "url",
-		"code": 8758,
-		"stock": 100,
-		"status": true,
-		"id": 4
 	}
 ]

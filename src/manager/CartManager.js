@@ -1,44 +1,49 @@
 import fs from 'fs'
 
-class CartManager {
-    constructor(carts = []) {
-        this.carts = carts;
+export default class CartManager {
+    constructor(){
         this.path = "./cart.json";
-        this.last_id = 1;
     }
-
-    // Init file
-    initialize = async () => {
-        const cartsJson = JSON.stringify(this.carts)
-        await fs.promises.writeFile(this.path, cartsJson)
-    };
 
     createCart = async (newCart) => {
         try {
-            
+            const carts = await this.getCarts();
+            console.log(carts)
             if (!newCart.products) {
-                throw new Error('Incomplete cart data')
+                throw new Error('carrito incompleto')
             }
-
-            
-            newCart.id = this.last_id
-
-            this.last_id = this.last_id + 1
-            this.carts.push(newCart)
-
-
-            const dataJson = JSON.stringify(this.carts)
-            const data = await fs.promises.writeFile(this.path, dataJson)
-
+            if(carts.length == 0){
+                newCart.id = 1;
+            }else{
+                newCart.id = carts[carts.length-1].id+1
+            }
+            carts.push(newCart)
+            await fs.promises.writeFile(this.path,JSON.stringify(carts,null,'\t')); 
             return newCart
         } catch (error) {
             console.log(error)
         }
     }
 
-    getProductByCartId = async (cid) => {
+    getCarts = async() => {//listo
+        try{
+            if(fs.existsSync(this.path)){
+                const data = await fs.promises.readFile(this.path,'utf-8');
+                const carts = JSON.parse(data);
+                return carts;
+            }else{
+                return [];
+            }
+        }catch(error){
+             console.log(error)
+        }
+     }
+
+    getProductByCartId = async (cid) => {//listo
         try {
-            const myCart = this.carts.find(c => c.id === cid);
+            const data = await fs.promises.readFile(this.path,'utf-8');
+            const carts = JSON.parse(data);
+            const myCart = carts.find(c => c.id == cid);
             if (!myCart) return console.log("Error, carrito no encontrado");
             return myCart
         } catch (err) {
@@ -47,28 +52,34 @@ class CartManager {
     }
 
     addProductToCart = async (cid, pid, quantity = 1) => {
-        const item_index = this.carts.findIndex(c => c.id === cid)
+        const data = await fs.promises.readFile(this.path,'utf-8');
+        const carts = JSON.parse(data);
+        
+        const cartIndex = carts.findIndex(c => c.id == cid)
 
-        if (item_index < 0) {
-            console.info(`no cart with the next id: ${cid}`)
+        if (cartIndex < 0) {
+            console.info(`no hay un carrito con este id: ${cid}`)
             return null
         }
 
-        const selectedCart = this.carts[item_index];
-        const productIndex = selectedCart.products.findIndex(p => p.pid === pid)
+        const cartResult = await this.getProductByCartId(cid);
+        const selectedCart = carts[cartIndex];
+        const productIndex = selectedCart.products.findIndex(p => p.pid == pid)
 
         if (productIndex >= 0) {
-            this.carts[item_index][productIndex].quantity += 1
+            carts[cartIndex][productIndex].quantity+1
+            console.log(carts)
+            console.log(carts[cartIndex])
+            console.log(carts[cartIndex][productIndex])
+            console.log(carts[cartIndex][productIndex].quantity)
         } else {
             const cartProduct = { quantity, pid }
             selectedCart.products.push(cartProduct);
         }
 
-        const cartJson = JSON.stringify(this.carts)
-        await fs.promises.writeFile(this.path, cartJson);
+        await fs.promises.writeFile(this.path,JSON.stringify(carts,null,'\t'));
 
-        return this.carts[item_index]
+        return carts[cartIndex]
     }
 }
 
-export default CartManager;

@@ -20,8 +20,7 @@ router.get('/', async (req,res) => {//listo
         }
     }catch(err){
         console.error(err)
-        res.code(500)
-        res.send("hubo un error al buscar los productos")
+        res.status(500).send({error:"Error interno del servidor"});
     }
 })
 
@@ -34,8 +33,7 @@ router.get('/:pid', async (req,res) => {//listo
         res.send(search);
     }catch(err){
         console.error(err)
-        res.code(500)
-        res.send("producto no encontrado")
+        res.status(500).send({error:"Error interno del servidor"});
     }
 })
 
@@ -68,7 +66,7 @@ router.post('/', async (req,res)=>{//listo
 
         res.json(newProductCreated)
     } catch (err) {
-        res.send("error en crear el  producto")
+        res.status(500).send({error:"Error interno del servidor"});
     }
 
 })
@@ -105,6 +103,7 @@ router.delete('/:pid', async (req,res) =>{//listo
         res.send({status:"success",message:"producto eliminado"});
     }catch(err){
         console.log(err)
+        res.status(500).send({error:"Error interno del servidor"});
     }
 })
 

@@ -5,7 +5,7 @@ export default class CartManager {
         this.path = "./cart.json";
     }
 
-    createCart = async (newCart) => {
+    createCart = async (newCart) => {//listo
         try {
             const carts = await this.getCarts();
             console.log(carts)
@@ -51,35 +51,40 @@ export default class CartManager {
         }
     }
 
-    addProductToCart = async (cid, pid, quantity = 1) => {
-        const data = await fs.promises.readFile(this.path,'utf-8');
-        const carts = JSON.parse(data);
-        
-        const cartIndex = carts.findIndex(c => c.id == cid)
-
-        if (cartIndex < 0) {
-            console.info(`no hay un carrito con este id: ${cid}`)
-            return null
+    addProductToCart = async (cid, pid, quantity = 1) => {//listo
+        try{
+            const data = await fs.promises.readFile(this.path,'utf-8');
+            const carts = JSON.parse(data);
+            
+            const cartIndex = carts.findIndex(c => c.id == cid)
+            if (cartIndex < 0) {
+                console.info(`no hay un carrito con este id: ${cid}`)
+                return null
+            }
+    
+            const selectedCart = carts[cartIndex];
+    
+            const productIndex = carts[cartIndex].products.findIndex(p => p.pid == pid)
+    
+            if (productIndex >= 0) {
+                const quantityUltima = carts[cartIndex].products[productIndex].quantity;
+                const obj = {}
+                obj.quantity = quantityUltima+1;
+                obj.pid = pid;
+                carts[cartIndex].products[productIndex].quantity = obj.quantity;
+                carts[cartIndex].products.filter(p => p != obj);
+                carts[cartIndex].products[productIndex].quantity
+            } else {
+                const cartProduct = { quantity, pid }
+                selectedCart.products.push(cartProduct);
+            }
+    
+            await fs.promises.writeFile(this.path,JSON.stringify(carts,null,'\t'));
+    
+            return carts[cartIndex];
+        }catch(error){
+            console.log(error);
         }
-
-        const cartResult = await this.getProductByCartId(cid);
-        const selectedCart = carts[cartIndex];
-        const productIndex = selectedCart.products.findIndex(p => p.pid == pid)
-
-        if (productIndex >= 0) {
-            carts[cartIndex][productIndex].quantity+1
-            console.log(carts)
-            console.log(carts[cartIndex])
-            console.log(carts[cartIndex][productIndex])
-            console.log(carts[cartIndex][productIndex].quantity)
-        } else {
-            const cartProduct = { quantity, pid }
-            selectedCart.products.push(cartProduct);
-        }
-
-        await fs.promises.writeFile(this.path,JSON.stringify(carts,null,'\t'));
-
-        return carts[cartIndex]
     }
 }
 

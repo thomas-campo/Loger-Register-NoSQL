@@ -31,5 +31,82 @@
 		"stock": 100,
 		"status": true,
 		"id": 3
+	},
+	{
+		"title": "mouse",
+		"description": "dispositivo para navergar por el pc",
+		"price": 350,
+		"category": "accesorio",
+		"thumbnail": "url",
+		"code": 122,
+		"stock": 100,
+		"status": true,
+		"id": 4
+	},
+	{
+		"title": "mouse",
+		"description": "dispositivo para navergar por el pc",
+		"price": 350,
+		"category": "accesorio",
+		"thumbnail": "url",
+		"code": 1552,
+		"stock": 100,
+		"status": true,
+		"id": 5
+	},
+	{
+		"title": "mouse",
+		"description": "dispositivo para navergar por el pc",
+		"price": 350,
+		"category": "accesorio",
+		"thumbnail": "url",
+		"code": 15852,
+		"stock": 100,
+		"status": true,
+		"id": 6
+	},
+	{
+		"title": "mouse",
+		"description": "dispositivo para navergar por el pc",
+		"price": 350,
+		"category": "accesorio",
+		"thumbnail": "url",
+		"code": 155542,
+		"stock": 100,
+		"status": true,
+		"id": 7
+	},
+	{
+		"title": "mouse",
+		"description": "dispositivo para navergar por el pc",
+		"price": 350,
+		"category": "accesorio",
+		"thumbnail": "url",
+		"code": 5542,
+		"stock": 100,
+		"status": true,
+		"id": 8
+	},
+	{
+		"title": "mouse",
+		"description": "dispositivo para navergar por el pc",
+		"price": 350,
+		"category": "accesorio",
+		"thumbnail": "url",
+		"code": 54552,
+		"stock": 100,
+		"status": true,
+		"id": 9
+	},
+	{
+		"title": "mouse",
+		"description": "dispositivo para navergar por el pc",
+		"price": 350,
+		"category": "accesorio",
+		"thumbnail": "url",
+		"code": 54555252,
+		"stock": 100,
+		"status": true,
+		"id": 10
 	}
 ]

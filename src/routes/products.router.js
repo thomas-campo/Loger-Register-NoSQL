@@ -59,12 +59,15 @@ router.post('/', async (req,res)=>{//listo
         const status = req.body.status
         const stock = req.body.stock || 100
         const category = req.body.category
-        const thumbnails = req.body.thumbnails
+        const thumbnails = req.body.thumbnails || "sin archivo"
         
         const newProduct = new Product(title, description, price, category, thumbnails, code, stock, status);
         const newProductCreated = await productManager.addProduct(newProduct);
-
+        
         res.json(newProductCreated)
+
+        const products = await productManager.getProducts();
+        req.io.emit('products',products);
     } catch (err) {
         res.status(500).send({error:"Error interno del servidor"});
     }
@@ -99,7 +102,9 @@ router.put('/:pid', async (req,res) => {//listo
 router.delete('/:pid', async (req,res) =>{//listo
     try{
         const productId = req.params.pid;
-        await productManager.deleteProduct(productId)
+        await productManager.deleteProduct(productId);
+        const products = await productManager.getProducts();
+        req.io.emit('products',products);
         res.send({status:"success",message:"producto eliminado"});
     }catch(err){
         console.log(err)

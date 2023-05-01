@@ -1,0 +1,40 @@
+<div>
+    {{#if products}}
+    <h2>Lista de productos</h2>
+    <a href="http://localhost:8080/realTimeProducts">ir a realTimeProducts</a>
+    {{#each products }}
+    <div class="card bg-secondary mb-3 mx-4 my-4" style="max-width: 20rem;">
+        <div class="card-body">
+            <h4 class="card-title">{{this.title}}</h4>
+            <p class="card-text">
+                <li>
+                    id: {{this.id}}
+                </li>
+                <li>
+                    description: {{this.description}}
+                </li>
+                <li>
+                    price: ${{this.price}}
+                </li>
+                <li>
+                    category: {{this.category}}
+                </li>
+                <li>
+                    status: {{this.status}}
+                </li>
+                <li>
+                    stock: {{this.stock}}
+                </li>
+                <li>
+                    thumbnail: {{this.thumbnail}}
+                </li>
+                <li>
+                    code: {{this.code}}
+                </li>
+            </p>
+        </div>
+        {{/each}}
+        {{else}}
+        <h2>no hay productos por mostrar</h2>
+    {{/if}}
+</div>

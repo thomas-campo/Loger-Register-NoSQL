@@ -71,7 +71,7 @@ export default class ProductManager{
                     return product
                 })
                 await fs.promises.writeFile(this.path,JSON.stringify(nuevoArray,null,'\t'));
-                return console.log(nuevoArray);
+                return nuevoArray;
             }
         }catch(error){
             console.log(error)
@@ -85,7 +85,7 @@ export default class ProductManager{
                 const products = JSON.parse(data);
                 console.log(id);
                 const productDeleteArray = products.filter(product => product.id != id);
-                console.log(productDeleteArray);
+                console.log(`${productDeleteArray}`);
                 await fs.promises.writeFile(this.path,JSON.stringify(productDeleteArray,null,'\t'));
             }
         }catch(error){
@@ -111,7 +111,7 @@ export class Product {
         this.description = description;
         this.price = price;
         this.category = category
-        this.thumbnail = thumbnail;
+        this.thumbnail = thumbnail || "sin archivo";
         this.code = code;
         this.stock = stock;
         this.status = status;

@@ -14,9 +14,11 @@ router.get('/', async (req,res) => {//listo
         const products = await product
         if(maxProducts){
             const limitProduct = products.slice( 0 , maxProducts);
+            req.io.emit('products',limitProduct);
             res.send(limitProduct);
         } else{
-            res.send(products)
+            req.io.emit('products',products);
+            res.send(products);
         }
     }catch(err){
         console.error(err)
@@ -30,6 +32,8 @@ router.get('/:pid', async (req,res) => {//listo
         console.log(productsId)
         const products = await product;
         const search = products.find( u => u.id == productsId);
+        console.log(search)
+        req.io.emit('products', [ search ] );
         res.send(search);
     }catch(err){
         console.error(err)
@@ -91,6 +95,8 @@ router.put('/:pid', async (req,res) => {//listo
         
         const product = new Product(title, description, price, category, thumbnails, code, stock, status);
         const updatedProduct = await productManager.updateProduct(productoId, product);
+        console.log(updatedProduct);
+        req.io.emit('products',updatedProduct);
         res.send({status:"success",message:"producto actualizado"});
     }catch(err){
         const productoId = req.params.pid;

@@ -62,26 +62,3 @@ socket.on('products', data => {
     products.innerHTML = productos;
     btnEliminar()
 })
-
-
-formulario.addEventListener('submit', (event) => {
-    event.preventDefault()
-    const data = Object.fromEntries(new FormData(event.target))
-    data['price'] = Number(data['price'])
-    data['stock'] = Number(data['stock'])
-    console.log(data)//objeto del formulario
-    
-
-    socket.emit('product', data)
-    socket.on('message', (res) => {
-        if(res.status === 'error') {
-            console.log("error")
-        }
-        else{
-            console.log("sin error")
-        }
-    })
-
-   
-    formulario.reset()
-})

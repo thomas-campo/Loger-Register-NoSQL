@@ -1,121 +1,65 @@
-import { Router } from "express";
-import ProductManager from "../manager/ProductManager.js";
-import { Product } from "../manager/ProductManager.js";
-
-const productManager = new ProductManager();
+import { Router } from 'express';
+import ProductManagerMongo from '../dao/mongo/manager/ProductManagerMongo.js';
 
 const router = Router();
 
-const product = await productManager.getProducts();
+const productManager = new ProductManagerMongo();
 
-router.get('/', async (req,res) => {//listo
-    try{
-        const maxProducts = req.query.limit;
-        const products = await product
-        if(maxProducts){
-            const limitProduct = products.slice( 0 , maxProducts);
-            req.io.emit('products',limitProduct);
-            res.send(limitProduct);
-        } else{
-            req.io.emit('products',products);
-            res.send(products);
-        }
-    }catch(err){
-        console.error(err)
-        res.status(500).send({error:"Error interno del servidor"});
-    }
+router.get('/', async (req, res) => {
+  
+  const products = await productManager.getProducts();
+  const maxProducts = req.query.limit;
+  if(!maxProducts){
+    req.io.emit('products',products);
+    res.send({ status: 'success', payload: products });
+  }
+  const limitProduct = products.slice( 0 , maxProducts);
+  req.io.emit('products',limitProduct);
+  res.send({ status: 'success', payload: limitProduct });
+});
+
+router.post('/', async (req, res) => {
+  const { title, description, price, category, thumbnail, code, stock } = req.body;
+  const products = await productManager.getProducts();
+  const productExist = req.body;
+  if(!title||!description||!price||!category||!thumbnail||!code) return res.status(400).send({status:"error",error:"Valores incompletos"})
+  const exist = products.find( p => p.code === productExist.code)
+  if(exist){
+    console.log('el producto ya existe')
+    return res.send({status:"error",error:"producto ya existente"});
+  }
+  const product = {
+    title,
+    description,
+    price,
+    category,
+    thumbnail,
+    code,
+    stock
+  }
+
+  await productManager.createProduct(product);
+  res.sendStatus(201);
+});
+
+router.get('/:cid', async (req, res) => {
+  const { cid } = req.params;
+  const product = await productManager.getProductBy({ _id: cid });
+  if (!product) return res.status(404).send({ status: 'error', error: 'Company not found' });
+  res.send({ product });
+});
+
+router.put('/:cid', async(req,res)=>{
+  const {cid} = req.params;
+  const updateProduct = req.body;
+  await productManager.updateProduct(cid,updateProduct);
+  res.sendStatus(201);
 })
 
-router.get('/:pid', async (req,res) => {//listo
-    try{
-        const productsId = req.params.pid;
-        console.log(productsId)
-        const products = await product;
-        const search = products.find( u => u.id == productsId);
-        console.log(search)
-        req.io.emit('products', [ search ] );
-        res.send(search);
-    }catch(err){
-        console.error(err)
-        res.status(500).send({error:"Error interno del servidor"});
-    }
-})
-
-router.post('/', async (req,res)=>{//listo
-    try{
-        if(!req.body.title ||
-            !req.body.description ||
-            !req.body.code ||
-            !req.body.price ||
-            !req.body.status ||
-            !req.body.stock ||
-            !req.body.category ||
-            !req.body.thumbnails){
-                console.error('el producto esta incompleto');
-                res.send()
-                return
-        }
-
-        const title = req.body.title
-        const description = req.body.description
-        const code = req.body.code
-        const price = req.body.price
-        const status = req.body.status
-        const stock = req.body.stock || 100
-        const category = req.body.category
-        const thumbnails = req.body.thumbnails || "sin archivo"
-        
-        const newProduct = new Product(title, description, price, category, thumbnails, code, stock, status);
-        const newProductCreated = await productManager.addProduct(newProduct);
-        
-        res.json(newProductCreated)
-
-        const products = await productManager.getProducts();
-        req.io.emit('products',products);
-    } catch (err) {
-        res.status(500).send({error:"Error interno del servidor"});
-    }
-
-})
-
-router.put('/:pid', async (req,res) => {//listo
-    try{
-        const productoId = req.params.pid;
-
-        const title = req.body.title;
-        const description = req.body.description;
-        const price = req.body.price;
-        const category = req.body.category;
-        const thumbnails = req.body.thumbnails;
-        const code = req.body.code;
-        const stock = req.body.stock;
-        const status = req.body.status;
-
-        if (!productoId) return res.send('no enviaste el producto a actualizar');
-        
-        const product = new Product(title, description, price, category, thumbnails, code, stock, status);
-        const updatedProduct = await productManager.updateProduct(productoId, product);
-        console.log(updatedProduct);
-        req.io.emit('products',updatedProduct);
-        res.send({status:"success",message:"producto actualizado"});
-    }catch(err){
-        const productoId = req.params.pid;
-        console.log(`error en actualizar el producto ${productoId}`)
-        res.send(null)
-    }
-})
-
-router.delete('/:pid', async (req,res) =>{//listo
-    try{
-        const productId = req.params.pid;
-        await productManager.deleteProduct(productId);
-        const products = await productManager.getProducts();
-        req.io.emit('products',products);
-        res.send({status:"success",message:"producto eliminado"});
-    }catch(err){
-        console.log(err)
-        res.status(500).send({error:"Error interno del servidor"});
-    }
+router.delete('/:cid',async(req,res)=>{
+  const {cid} = req.params;
+  await productManager.deleteProduct(cid);
+  res.send({status:'success', payload:productManager.getProducts()});
 })
 
 export default router;

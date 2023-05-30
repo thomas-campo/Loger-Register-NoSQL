@@ -1,8 +1,8 @@
-import ProductManager from "../../manager/ProductManager.js";
+import ProductManager from "../../dao/mongo/manager/ProductManagerMongo.js";
 
-const productManager = ProductManager();
+const productManager = new ProductManager();
 
-export default function productsSockets(ds){
+export default function productsSockets(){
     socketServer.on('connection', async socket =>{
         const data = await productManager.getProducts();
         
@@ -10,7 +10,7 @@ export default function productsSockets(ds){
 
         socket.on('product', async data =>{
             try{
-                const valueReturned = await productManager.addProduct(data);
+                const valueReturned = await productManager.createProduct(data);
                 socket.emit('message',valueReturned);
             }catch(err){
                 console.log(err)

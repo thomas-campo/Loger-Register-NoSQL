@@ -2,25 +2,7 @@ const socket = io();
 const products = document.getElementById('products');
 const formulario = document.getElementById('form');
 
-const btnEliminar = () => {
-    const botones = document.getElementsByClassName('btn-danger')
-    const arrayBtn = Array.from(botones)
-
-    arrayBtn.forEach(element => {
-        element.addEventListener('click', () => {
-            if (result.isConfirmed) {
-                socket.emit('delete', Number(element.id))
-                socket.on('delete', (event) => {
-                    console.log(event);  
-                })
-            }
-        })
-    })
-}
-
 socket.on('products', data => {
-
-    console.log('mensaje del servidor');
 
     let productos = ''
     data.forEach(producto => {
@@ -28,9 +10,6 @@ socket.on('products', data => {
                         <div class="card-body">
                             <h4 class="card-title">${producto.title}</h4>
                             <p class="card-text">
-                                <li>
-                                    id: ${producto.id}
-                                </li>
                                 <li>
                                     description: ${producto.description}
                                 </li>
@@ -48,9 +27,6 @@ socket.on('products', data => {
                                 </li>
                                 <li>
                                     thumbnail: ${producto.thumbnails}
-                                </li>
-                                <li>
-                                    code: ${producto.code}
                                 </li>
                             </p>
                         </div>

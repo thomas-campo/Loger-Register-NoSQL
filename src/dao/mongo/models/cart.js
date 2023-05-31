@@ -6,7 +6,7 @@ const schema = new mongoose.Schema({
     products:{
         type:[
             {
-                product:{
+                _id:{
                     type:mongoose.SchemaTypes.ObjectId,
                     ref:'products'
                 },
@@ -19,6 +19,11 @@ const schema = new mongoose.Schema({
     }
 },{timestamps:{createdAt:'created_at',updatedAt:'update_at'}}
 );
+
+schema.pre('findOne', function(next){
+    this.populate('products._id')
+    next()
+})
 
 const cartModel = mongoose.model(collection,schema);
 export default cartModel;

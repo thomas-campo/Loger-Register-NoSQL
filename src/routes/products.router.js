@@ -6,23 +6,22 @@ const router = Router();
 const productManager = new ProductManagerMongo();
 
 router.get('/', async (req, res) => {
-  
   const products = await productManager.getProducts();
-  const maxProducts = req.query.limit;
-  if(!maxProducts){
-    req.io.emit('products',products);
-    res.send({ status: 'success', payload: products });
-  }
-  const limitProduct = products.slice( 0 , maxProducts);
-  req.io.emit('products',limitProduct);
-  res.send({ status: 'success', payload: limitProduct });
+  // const maxProducts = req.query.limit;
+  // if(!maxProducts){
+  //   req.io.emit('products',products);
+  //   res.send({ status: 'success', payload: products });
+  // }
+  // const limitProduct = products.slice( 0 , maxProducts);
+  // req.io.emit('products',limitProduct);
+  res.send({ status: 'success', payload: products });
 });
 
 router.post('/', async (req, res) => {
   const { title, description, price, category, thumbnail, code, stock } = req.body;
   const products = await productManager.getProducts();
   const productExist = req.body;
-  if(!title||!description||!price||!category||!thumbnail||!code) return res.status(400).send({status:"error",error:"Valores incompletos"})
+  if(!title||!description||!price||!category||!thumbnail||!code) return res.status(400).send({status:"error",error:"Valores incompletos",title,description,price,category,thumbnail,code})
   const exist = products.find( p => p.code === productExist.code)
   if(exist){
     console.log('el producto ya existe')

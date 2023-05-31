@@ -10,6 +10,7 @@ export default class ProductManager{
     }
 
     getProductById=(id)=>{
+        console.log(id,"idproduct")
         return productModel.findById(id).lean();
     }
 

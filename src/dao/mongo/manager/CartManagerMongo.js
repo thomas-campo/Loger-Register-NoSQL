@@ -6,11 +6,8 @@ import ProductManager from "./ProductManagerMongo.js";
 const productManager = new ProductManager();
 
 export default class CartManager{
-    createCart=(product)=>{
-        const cartCreated = cartModel.create({});
-        products.forEach(product => cartCreated.products.push(product));
-        cartCreated.save()
-        return cartCreated
+    createCart=()=>{
+        return cartModel.create({ products: [] });
     }
 
     getCarts=()=>{
@@ -18,29 +15,45 @@ export default class CartManager{
     }
 
     getCartById=(cid)=>{//trae los productos del carrito, buscando por el id del carrito
-        return cartModel.findById(cid).lean();
+        return cartModel.findOne({ _id: cid }).lean()
     }
     
-    addProductToCart=(cid,pid)=>{//agrega productos al carrito se
+    addProductInCart = async (cid, productBody) => {
         try {
-            return cartModel.updateOne({_id:cid}, {$push: {products:{product: new mongoose.Types.ObjectId(pid)}}})
-        }catch(error){
-            res.send(`hubo un error al agregar el producto al carrito`);
+            const cart = await cartModel.findOne({ _id: cid }).lean();
+            const findProduct = cart.products.some(
+                (product) => product._id._id.toString() === productBody._id);
+            if (findProduct) {
+                await cartModel.updateOne(
+                    { _id: cid, "products._id": productBody._id },
+                    { $inc: { "products.$.quantity": productBody.quantity } })
+                return await this.getCartById(cid);
+            }
+
+            await cartModel.updateOne(
+                { _id: cid },
+                {
+                    $push: {
+                        products: {
+                            _id: productBody._id,
+                            quantity: productBody.quantity
+                        }
+                    }
+                })
+            return await this.getCartById(cid);
         }
-    }
-    
-    deleteProductByIdCart=(cid,pid)=>{//busca primero el carrito y despues el producto y lo elimina
-        const carrito = cartModel.this.getCartById(cid);
-        return cartModel.carrito.findByIdAndDelete(pid);
+        catch (err) {
+            console.log(err.message);
+            return err
+
+        }
     }
 
     deleteProductToCart = async (cid, products) => {
         try {
-            return await cartModel.findOneAndUpdate(
-                { _id: cid },
-                { products })
+            return await cartModel.findOneAndUpdate({ _id: cid },{ products })
         } catch (err) {
-            console.log(err.message);
+            console.log(err);
             return err
         }
 
@@ -50,6 +63,7 @@ export default class CartManager{
         try {
             return await cartModel.findOneAndUpdate({ _id: cid },{ products })
         } catch (err) {
+            console.log(err.message);
             return err
         }
     }
@@ -58,5 +72,4 @@ export default class CartManager{
         await cartModel.updateOne({ _id: cid },{products})
         return await cartModel.findOne({ _id: cid })
     }
-
 }

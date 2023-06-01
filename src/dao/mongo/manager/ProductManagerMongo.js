@@ -18,6 +18,10 @@ export default class ProductManager{
             return err
         }
     }
+
+    getProductArray=async(filter, options)=>{
+        return await productModel.paginate(filter, options);
+    }
     
     getProducts=()=>{
         return productModel.find().lean();

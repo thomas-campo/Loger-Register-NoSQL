@@ -4,7 +4,6 @@ import handlebars from 'express-handlebars';
 import { Server } from 'socket.io';
 
 import ProductManager from "./dao/mongo/manager/ProductManagerMongo.js";
-import CartManager from "./dao/mongo/manager/CartManagerMongo.js";
 
 // import viewsRouter from "./routes/views.router.js"
 import viewsRouterMongo from "./routes/views.router.js";

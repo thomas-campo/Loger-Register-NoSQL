@@ -5,21 +5,61 @@ const router = Router();
 
 const productManager = new ProductManagerMongo();
 
+
+//http://localhost:8080/api/products?limit=5
 router.get('/', async (req, res) => {
   try{
-    const products = await productManager.getProducts();
-    const maxProducts = req.query.limit;
-    if(maxProducts){
-      const limitProduct = products.slice( 0 , maxProducts);
-      req.io.emit('products',limitProduct);
-      res.send({ status: 'success', payload: limitProduct });
+    let { limit, page, sort, category } = req.query
+    console.log(req.originalUrl);
+
+    const options = {
+        page: Number(page) || 1,
+        limit: Number(limit) || 10,
+        sort: { price: Number(sort) }
+    };
+
+    if (!(options.sort.price === -1 || options.sort.price === 1)) {
+        delete options.sort
     }
-    
-    req.io.emit('products',products);
-    res.send({ status: 'success', payload: products });
+
+
+    const links = (products) => {
+        let prevLink;
+        let nextLink;
+        if (req.originalUrl.includes('page')) {
+            prevLink = products.hasPrevPage ? req.originalUrl.replace(`page=${products.page}`, `page=${products.prevPage}`) : null;
+            nextLink = products.hasNextPage ? req.originalUrl.replace(`page=${products.page}`, `page=${products.nextPage}`) : null;
+            return { prevLink, nextLink };
+        }
+        if (!req.originalUrl.includes('?')) {
+            prevLink = products.hasPrevPage ? req.originalUrl.concat(`?page=${products.prevPage}`) : null;
+            nextLink = products.hasNextPage ? req.originalUrl.concat(`?page=${products.nextPage}`) : null;
+            return { prevLink, nextLink };
+        }
+        prevLink = products.hasPrevPage ? req.originalUrl.concat(`&page=${products.prevPage}`) : null;
+        nextLink = products.hasNextPage ? req.originalUrl.concat(`&page=${products.nextPage}`) : null;
+        return { prevLink, nextLink };
+
+    }
+
+    const categories = await productManager.categories()
+
+    const result = categories.some(categ => categ === category)
+    if (result) {
+      const products = await productManager.getProductArray({ category }, options);
+      const { prevLink, nextLink } = links(products);
+      const { totalPages, prevPage, page, nextPage, hasNextPage, hasPrevPage, docs } = products
+      return res.status(200).send({ status: 'success', payload: docs, totalPages, prevPage, page, nextPage, hasNextPage, hasPrevPage, prevLink, nextLink });
+    }
+
+    const products = await productManager.getProductArray({}, options);
+    console.log(products, 'Product');
+    const { totalPages, prevPage, nextPage, hasNextPage, hasPrevPage, docs } = products
+    const { prevLink, nextLink } = links(products);
+    return res.status(200).send({ status: 'success', payload: docs, totalPages, prevPage, page, nextPage, hasNextPage, hasPrevPage, prevLink, nextLink });
   }catch(error){
     console.log("error en el routerGet de productos");
-    res.send({error:"error en el servidor al obtenes los productos(router.get(products))"});
+    res.send({error:"error en el servidor al obtener los productos(router.get(products))"});
   }
 });
 

@@ -48,11 +48,7 @@ routerCart.post('/:cid/product/:pid', async(req, res) => {//agregar un producto 
     
         const result = await cartManager.addProductInCart(cid, { _id: pid, quantity })
         
-        return res.status(200).send({message:`se agrego correctamente el producto al carrito`});
-
-
-        // const cart = await  cartManager.addProductToCart(cid, pid);
-        // res.send({status: 'success', payload:cart });
+        return res.status(200).send({message:`se agrego correctamente el producto al carrito`, payload:result});
     }catch(err){
         console.log(err)
         res.send({error:`error:${err}`});

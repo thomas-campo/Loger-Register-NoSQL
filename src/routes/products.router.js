@@ -6,16 +6,21 @@ const router = Router();
 const productManager = new ProductManagerMongo();
 
 router.get('/', async (req, res) => {
-  const products = await productManager.getProducts();
-  const maxProducts = req.query.limit;
-  if(!maxProducts){
+  try{
+    const products = await productManager.getProducts();
+    const maxProducts = req.query.limit;
+    if(maxProducts){
+      const limitProduct = products.slice( 0 , maxProducts);
+      req.io.emit('products',limitProduct);
+      res.send({ status: 'success', payload: limitProduct });
+    }
+    
     req.io.emit('products',products);
     res.send({ status: 'success', payload: products });
+  }catch(error){
+    console.log("error en el routerGet de productos");
+    res.send({error:"error en el servidor al obtenes los productos(router.get(products))"});
   }
-  const limitProduct = products.slice( 0 , maxProducts);
-  req.io.emit('products',limitProduct);
-
-  res.send({ status: 'success', payload: limitProduct });
 });
 
 router.post('/', async (req, res) => {
@@ -38,10 +43,10 @@ router.post('/', async (req, res) => {
       code,
       stock
     }
+    const result = await productManager.createProduct(product);
     const arrayProducts = await productManager.getProducts();
     req.io.emit('products',arrayProducts);
-    await productManager.createProduct(product);
-    res.sendStatus(201);  
+    res.status(201).send({status:"success",payload:result});  
   }catch(error){
     res.status(500).send({error:"error interno del servidor"})
   }

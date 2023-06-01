@@ -1,8 +1,10 @@
 import { Router } from "express";
 import ProductManager from "../dao/mongo/manager/ProductManagerMongo.js";
+import CartManager from "../dao/mongo/manager/CartManagerMongo.js";
 
 const router = Router();
 const productManager = new ProductManager();
+const cartManager = new CartManager();
 
 
 router.get('/', async (req,res)=>{//render de home.handlebars
@@ -14,16 +16,28 @@ router.get('/', async (req,res)=>{//render de home.handlebars
     }
 })
 
-router.get('/realTimeProducts',(req,res)=>{//aca conecto la vista realtimeproducts con el render
-    res.render('realTimeProducts', {} )//ponemos el objeto vacio porque no le mandamos nada por el handlebars
+router.get('/products', async (req, res) => {
+    try {
+        return res.render('products');
+    } catch (error) {
+        console.log(error);
+    }
 })
 
-router.get('/products',async (req,res)=>{
-    res.render('products');
-})
+router.get('/cart/:cid',async (req,res)=>{
+    try {
+        const { cid } = req.params
+        const result = await cartManager.getCartById(cid)
+        
+        if(!result) return res.render('cart', { result: false, message: 'no se econtro el carrito '});
 
-router.get('/carts/:cid',async (req,res)=>{
-    res.render('cartById');
+        const data = await cartManager.getCartById(cid);
+        console.log(data);
+        return res.render('cart', {data});
+
+    } catch (err) {
+        console.log(err);
+    }
 })
 
 

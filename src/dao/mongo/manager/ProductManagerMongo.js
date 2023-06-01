@@ -1,6 +1,24 @@
 import productModel from "../models/product.js"
 
 export default class ProductManager{
+    categories = async () => {
+        try {
+            const categories = await productModel.aggregate([
+                {
+                    $group: {
+                        _id: null,
+                        categories: { $addToSet: "$category" }
+                    }
+                }
+            ])
+            return categories[0].categories
+        }
+        catch (err) {
+            console.log(err);
+            return err
+        }
+    }
+    
     getProducts=()=>{
         return productModel.find().lean();
     }
@@ -10,12 +28,10 @@ export default class ProductManager{
     }
 
     getProductById=(id)=>{
-        console.log(id,"idproduct")
         return productModel.findById(id).lean();
     }
 
     createProduct=(product)=>{
-        console.log(product);
         return productModel.create(product);
     }
 

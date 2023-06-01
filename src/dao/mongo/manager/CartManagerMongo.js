@@ -27,6 +27,7 @@ export default class CartManager{
                 await cartModel.updateOne(
                     { _id: cid, "products._id": productBody._id },
                     { $inc: { "products.$.quantity": productBody.quantity } })
+                    console.log("if")
                 return await this.getCartById(cid);
             }
 
@@ -40,6 +41,7 @@ export default class CartManager{
                         }
                     }
                 })
+                console.log("await")
             return await this.getCartById(cid);
         }
         catch (err) {

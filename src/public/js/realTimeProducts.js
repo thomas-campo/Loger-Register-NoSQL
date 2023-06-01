@@ -1,6 +1,39 @@
 const socket = io();
 const products = document.getElementById('products');
-const formulario = document.getElementById('form');
+
+const addToCart = () => {
+    const botones = document.getElementsByClassName('agregarAlCarrito')
+    const arrayBtn = Array.from(botones)
+
+    arrayBtn.forEach(element => {
+        element.addEventListener('click', () => {
+            console.log('click');
+            Swal.fire({
+                title: 'quieres agregar el producto al carrito?',
+                showDenyButton: true,
+                showCancelButton: false,
+                confirmButtonText: 'Yes',
+                denyButtonText: 'No',
+                customClass: {
+                    actions: 'my-actions',
+                    cancelButton: 'order-1 right-gap',
+                    confirmButton: 'order-2',
+                    denyButton: 'order-3',
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    console.log(element.id,"element.id");
+                    console.log(element._id,"element._id");
+                    Swal.fire(`El producto se agrego al carrito. Id:${element.id}`, '', 'success');
+                    socket.emit('agregar', element.id);
+
+                }
+            })
+
+        })
+
+    })
+}
 
 socket.on('products', data => {
 
@@ -30,11 +63,11 @@ socket.on('products', data => {
                                 </li>
                             </p>
                         </div>
-                        <div class="d-flex justify-content-center mb-4">
-                            <button type="button" class=" btn btn-danger" id="${producto.id}">Eliminar</button>
-                        </div>
-                    </div>`
-    });
-    products.innerHTML = productos;
-    btnEliminar()
-})
+                        </div>`
+                    });
+                    products.innerHTML = productos;
+                    addToCart()
+});
+                // <div>
+                //     <button type="button" class="agregarAlCarrito" id="${producto._id}">agregar al carrito</button>
+                // </div>

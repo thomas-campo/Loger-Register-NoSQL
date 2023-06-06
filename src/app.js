@@ -1,7 +1,9 @@
 import  express from "express";
-import mongoose from "mongoose";
 import handlebars from 'express-handlebars';
 import { Server } from 'socket.io';
+import session from "express-session";
+import MongoStore from "connect-mongo";
+import mongoose from "mongoose";
 
 import ProductManager from "./dao/mongo/manager/ProductManagerMongo.js";
 
@@ -11,6 +13,8 @@ import viewsRouterMongo from "./routes/views.router.js";
 import productsRouterMongo from "./routes/products.router.js"
 // import cartRouter from "./routes/cart.router.js"
 import cartRouterMongo from "./routes/cart.router.js"
+import sessionsRouter from "./routes/sessions.router.js"
+
 import __dirname from './utils.js';
 
 const app = express();
@@ -21,6 +25,7 @@ const connection =  mongoose.connect('mongodb+srv://CoderUser:12345@cluster0.eb7
 
 const productManager = new ProductManager();
 
+
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 app.use(express.static(`${__dirname}/public`))
@@ -28,6 +33,22 @@ app.use(express.static(`${__dirname}/public`))
 app.engine('handlebars',handlebars.engine());
 app.set('views',`${__dirname}/views`);
 app.set('view engine','handlebars');
+
+// app.use(session({
+//     secret:"CoderS3cretFelis",
+//     resave:false,
+//     saveUninitialized:true
+// }))
+
+app.use(session({
+    store: new MongoStore({
+        mongoUrl:"mongodb+srv://CoderUser:12345@cluster0.eb7exok.mongodb.net/?retryWrites=true&w=majority",
+        ttl:50000
+    }),
+    secret:"CoderS3cr3t",
+    resave:false,
+    saveUninitialized:false
+}));
 
 app.use((req,res,next)=>{//aca es para referenciar nuestro io/midlewer
     req.io = io;
@@ -37,6 +58,7 @@ app.use((req,res,next)=>{//aca es para referenciar nuestro io/midlewer
 app.use('/',viewsRouterMongo);
 app.use('/api/products',productsRouterMongo);
 app.use('/api/carts',cartRouterMongo);
+app.use('/api/sessions',sessionsRouter);
 
 io.on('connection',async socket=>{
     const arrayProducts =  await productManager.getProducts();

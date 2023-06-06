@@ -9,6 +9,7 @@ const cartManager = new CartManager();
 
 router.get('/', async (req,res)=>{//render de home.handlebars
     try{
+        if(!req.session.user) return res.redirect('/login');
         const products = await productManager.getProducts()
         res.render('home', { products })
     }catch(err){

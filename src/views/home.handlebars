@@ -1,40 +1,13 @@
 <div>
-    {{#if products}}
-    <h2>Lista de productos</h2>
-    <a href="http://localhost:8080/realTimeProducts">ir a realTimeProducts</a>
-    {{#each products }}
-    <div class="card bg-secondary mb-3 mx-4 my-4" style="max-width: 20rem;">
-        <div class="card-body">
-            <h4 class="card-title">{{this.title}}</h4>
-            <p class="card-text">
-                <li>
-                    id: {{this.id}}
-                </li>
-                <li>
-                    description: {{this.description}}
-                </li>
-                <li>
-                    price: ${{this.price}}
-                </li>
-                <li>
-                    category: {{this.category}}
-                </li>
-                <li>
-                    status: {{this.status}}
-                </li>
-                <li>
-                    stock: {{this.stock}}
-                </li>
-                <li>
-                    thumbnail: {{this.thumbnail}}
-                </li>
-                <li>
-                    code: {{this.code}}
-                </li>
-            </p>
-        </div>
-        {{/each}}
-        {{else}}
-        <h2>no hay productos por mostrar</h2>
-    {{/if}}
+    <button><a href="/login">iniciar sesion</a></button>
+    <button><a href="/register">registrarse</a></button>
+    <h2>Lista de Productos</h2>
+    <button><a href="http://localhost:8080/cart/64751796ba779febe906b108">ir al carrito(Ejemplo id:64751796ba779febe906b108)</a></button>
+    <div class="row mt-4" id="products">
+        
+    </div>
+
 </div>
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/realTimeProducts.js"></script>
+<script src="/js/product.js"></script>

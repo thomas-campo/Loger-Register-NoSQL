@@ -4,7 +4,7 @@ import CartManager from "../../dao/mongo/manager/CartManagerMongo.js";
 const cartManager = new CartManager();
 const productManager = new ProductManager();
 
-export default function socketProducts(socketServer) {
+export default function(socketServer) {
     socketServer.on('connection', async socket => {
         socket.on('agregar',async data =>{
             const pid = data;

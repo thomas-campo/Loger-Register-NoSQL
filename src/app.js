@@ -4,6 +4,7 @@ import { Server } from 'socket.io';
 import session from "express-session";
 import MongoStore from "connect-mongo";
 import mongoose from "mongoose";
+import passport from "passport";
 
 import ProductManager from "./dao/mongo/manager/ProductManagerMongo.js";
 
@@ -14,6 +15,7 @@ import productsRouterMongo from "./routes/products.router.js"
 // import cartRouter from "./routes/cart.router.js"
 import cartRouterMongo from "./routes/cart.router.js"
 import sessionsRouter from "./routes/sessions.router.js"
+import initializePassport from "./config/passport.config.js";
 
 import __dirname from './utils.js';
 
@@ -34,12 +36,6 @@ app.engine('handlebars',handlebars.engine());
 app.set('views',`${__dirname}/views`);
 app.set('view engine','handlebars');
 
-// app.use(session({
-//     secret:"CoderS3cretFelis",
-//     resave:false,
-//     saveUninitialized:true
-// }))
-
 app.use(session({
     store: new MongoStore({
         mongoUrl:"mongodb+srv://CoderUser:12345@cluster0.eb7exok.mongodb.net/?retryWrites=true&w=majority",
@@ -54,6 +50,9 @@ app.use((req,res,next)=>{//aca es para referenciar nuestro io/midlewer
     req.io = io;
     next();
 })
+
+app.use(passport.initialize());
+initializePassport();
 
 app.use('/',viewsRouterMongo);
 app.use('/api/products',productsRouterMongo);

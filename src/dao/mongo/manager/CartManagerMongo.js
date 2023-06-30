@@ -1,9 +1,4 @@
-import mongoose from "mongoose";
 import cartModel from "../models/cart.js";
-
-import ProductManager from "./ProductManagerMongo.js";
-
-const productManager = new ProductManager();
 
 export default class CartManager{
     createCart=()=>{

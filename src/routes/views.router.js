@@ -59,4 +59,8 @@ router.get('/profile',privacity('PRIVATE'),async(req,res)=>{
     })
 })
 
+router.get('/restorePassword',privacity('NO_AUTHENTICATED'),(req,res)=>{
+    res.render('restorePassword')
+})
+
 export default router;

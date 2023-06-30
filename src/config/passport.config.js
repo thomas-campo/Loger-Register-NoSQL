@@ -2,6 +2,7 @@ import passport from "passport";
 import local from "passport-local";
 import GithubStrategy from "passport-github2";
 import userModel from "../dao/mongo/models/user.js";
+import UserManager from "../dao/mongo/manager/UserManagerMongo.js";
 import { createHash, validatePassword } from "../utils.js";
 
 const localStrategy = local.Strategy;
@@ -59,7 +60,7 @@ const initializePassport = ()=>{
 
     passport.use('github', new GithubStrategy({
         clientID:"Iv1.25b7b0f06a7dce08",
-        clientSecret:"b47696a90d45689da7dc149b3066d78980f56533",
+        clientSecret:"22560c970a930e20cc7415b2c7a24c6d7f081c2f",
         callbackURL:"http://localhost:8080/api/sessions/githubcallback"
     },async(accessToken,refreshToken,profile,done)=>{
         try{

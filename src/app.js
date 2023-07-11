@@ -5,6 +5,7 @@ import session from "express-session";
 import MongoStore from "connect-mongo";
 import mongoose from "mongoose";
 import passport from "passport";
+import config from './config.js';
 
 import ProductManager from "./dao/mongo/manager/ProductManagerMongo.js";
 
@@ -20,10 +21,10 @@ import initializePassport from "./config/passport.config.js";
 import __dirname from './utils.js';
 
 const app = express();
-const PORT = process.env.PORT||8080;
+const PORT = config.app.PORT
 const server = app.listen(PORT,()=>console.log(`escuchando en el puerto ${PORT}`));
 const io = new Server(server);
-const connection =  mongoose.connect('mongodb+srv://CoderUser:12345@cluster0.eb7exok.mongodb.net/?retryWrites=true&w=majority');
+const connection =  mongoose.connect(config.mongo.URL);
 
 const productManager = new ProductManager();
 
@@ -38,7 +39,7 @@ app.set('view engine','handlebars');
 
 app.use(session({
     store: new MongoStore({
-        mongoUrl:"mongodb+srv://CoderUser:12345@cluster0.eb7exok.mongodb.net/?retryWrites=true&w=majority",
+        mongoUrl:config.mongo.URL,
         ttl:50000
     }),
     secret:"CoderS3cr3t",

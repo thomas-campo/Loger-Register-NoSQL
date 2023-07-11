@@ -4,6 +4,7 @@ import GithubStrategy from "passport-github2";
 import userModel from "../dao/mongo/models/user.js";
 import UserManager from "../dao/mongo/manager/UserManagerMongo.js";
 import { createHash, validatePassword } from "../utils.js";
+import config from "../config.js"
 
 const localStrategy = local.Strategy;
 
@@ -29,7 +30,7 @@ const initializePassport = ()=>{
 
     passport.use('login',new localStrategy({ usernameField: 'email' },async (email, password, done) => {
         try{
-            if (email === 'admin@admin.com' && password === '123') {
+            if (email === config.admin.EMAIL && password === config.admin.PASSWORD) {
                 const user = {
                   id: 0,
                   name: `Admin`,

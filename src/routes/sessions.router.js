@@ -3,53 +3,21 @@ import passport from "passport";
 import UserManager from "../dao/mongo/manager/UserManagerMongo.js";
 import { createHash, validatePassword } from "../utils.js";
 import userModel from "../dao/mongo/models/user.js";
+import sessionController from "../controllers/session.controller.js";
 
 const router = Router();
 
-router.post('/register',passport.authenticate('register',{failureRedirect:'/api/sessions/registerFail',failureMessage:true}),async(req,res)=>{
-    res.send({status:"success",message:"registrado"});
-})
-router.get('/registerFail',(req,res)=>{
-    console.log(req.session.messages);
-    res.status(400).send({status:"error",error:req.session.messages})
-})
+router.post('/register',passport.authenticate('register',{failureRedirect:'/api/sessions/registerFail',failureMessage:true}),sessionController.register)
+router.get('/registerFail',sessionController.registerFailed)
 
-router.post('/login',passport.authenticate('login',{failureRedirect:'/api/sessions/loginFail', failureMessage:true}),async(req,res)=>{
-    req.session.user = {
-        name: req.user.name,
-        role: req.user.role,
-        id: req.user.id,
-        email: req.user.email
-    }
-    res.status(200).send({ status: 'success'});
-})
-router.get('/loginFail',(req,res)=>{
-    console.log(req.session.messages);
-    if(req.session.messages.length>4) return res.status(400).send({message:"se bloquearon los intentos de login"})
-    res.status(400).send({status:"error",error:req.session.messages});
-})
+router.post('/login',passport.authenticate('login',{failureRedirect:'/api/sessions/loginFail', failureMessage:true}),sessionController.login)
+router.get('/loginFail',sessionController.loginFailed)
 
-router.get('/logout',async(req,res)=>{
-    req.session.destroy(err =>{
-        if(!err){
-            res.redirect('/login');
-        }
-        else res.send({status:'error al cerrar sesion',body: err})
-    });
-});
+router.get('/logout',sessionController.logout);
 
 router.get('/github',passport.authenticate('github'),(req,res)=>{})
 
-router.get('/githubcallback',passport.authenticate('github'),(req,res)=>{
-    const user = req.user;
-    req.session.user={
-        id:user.id,
-        name:user.first_name,
-        rol:user.rol,
-        email:user.email
-    }
-    res.status(200).redirect('/products');
-})
+router.get('/githubcallback',passport.authenticate('github'),sessionController.githubCallback)
 
 router.post('/restorePassword',async(req,res)=>{
     const {email,password} = req.body;

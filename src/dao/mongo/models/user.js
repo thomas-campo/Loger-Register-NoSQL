@@ -17,10 +17,10 @@ const schema = new mongoose.Schema({
     }
 },{timestamps:true});
 
-schema.pre('findOne', function(next){
-    this.populate('carts._id')
-    next()
-})
+// schema.pre('findOne', function(next){
+//     this.populate('carts._id')
+//     next()
+// })
 
 const userModel = mongoose.model(collection,schema);
 export default userModel;

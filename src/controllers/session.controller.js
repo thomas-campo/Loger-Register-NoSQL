@@ -1,3 +1,4 @@
+import { createHash, validatePassword } from "../utils.js";
 import userModel from "../dao/mongo/models/user.js";
 
 const register = async(req,res)=>{
@@ -34,6 +35,8 @@ const logout = async(req,res)=>{
     });
 }
 
+const github = (req,res)=>{}
+
 const githubCallback = (req,res)=>{
     const user = req.user;
     req.session.user={
@@ -62,5 +65,7 @@ export default {
     login,
     loginFailed,
     logout,
-    githubCallback
+    github,
+    githubCallback,
+    restorePassword
 }

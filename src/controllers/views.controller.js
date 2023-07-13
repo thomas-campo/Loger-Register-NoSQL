@@ -41,8 +41,30 @@ const getCartById = async (req,res)=>{
     }
 }
 
+const getRegister = (req,res)=>{
+    res.render('register');
+}
+
+const getLogin = (req,res)=>{
+    res.render('login');
+}
+
+const getProfile = async(req,res)=>{
+    res.render('profile',{
+        user:req.session.user
+    })
+}
+
+const getRestorePassword = (req,res)=>{
+    res.render('restorePassword')
+}
+
 export default {
     getHome,
     getProducts,
-    getCartById
+    getCartById,
+    getRegister,
+    getLogin,
+    getProfile,
+    getRestorePassword
 }

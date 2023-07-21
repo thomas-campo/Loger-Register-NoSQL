@@ -3,6 +3,10 @@ import mongoose from "mongoose";
 const collection = "carts";
 
 const schema = new mongoose.Schema({
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'users'
+    },
     products:{
         type:[
             {
@@ -15,7 +19,8 @@ const schema = new mongoose.Schema({
                     default:1
                 }
             }
-        ]
+        ],
+        default: []
     }
 },{timestamps:{createdAt:'created_at',updatedAt:'update_at'}}
 );

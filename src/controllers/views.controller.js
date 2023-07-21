@@ -1,6 +1,8 @@
 import ProductManager from "../dao/mongo/manager/ProductManagerMongo.js";
 import CartManager from "../dao/mongo/manager/CartManagerMongo.js";
 
+import ProdModel from '../dao/mongo/models/product.js';
+
 const productManager = new ProductManager();
 const cartManager = new CartManager();
 
@@ -16,10 +18,12 @@ const getHome =  async (req,res)=>{//render de home.handlebars
 
 const getProducts = async (req, res) => {
     try {
+        const { page = 1 } = req.query;
+        const { docs, hasPrevPage, hasNextPage, prevPage, nextPage, ...rest } = await ProdModel.paginate({}, { page, limit: 10, lean: true })
+        const products = docs;
+        const userData = req.session.user;
         if(!req.session.user) return res.redirect('/login');
-        return res.render('products',{
-            user:req.session.user
-        });
+        return res.render("products", { allProducts: products, page: rest.page, hasPrevPage, hasNextPage, prevPage, nextPage, user: userData });
     } catch (error) {
         console.log(error);
     }

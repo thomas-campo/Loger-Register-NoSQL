@@ -4,7 +4,7 @@ import cartModel from '../dao/mongo/models/cart.js';
 const productManager = new ProductManager();
 const cartManager = new CartManager();
 
-const searchCart = async(req, res) => {//buscar el carrito por id
+const getCart = async(req, res) => {//buscar el carrito por id
     try{//listo
      const cid  = req.params.cid;
      const mycart = await cartManager.getCartById(cid);
@@ -18,7 +18,7 @@ const searchCart = async(req, res) => {//buscar el carrito por id
 
 const createCart = async(req, res) => {//crear carrito
     try{//listo
-        const createdCart = await cartManager.createCart();
+        const createdCart = await cartManager.createCart(cart);
         res.status(200).send(createdCart);
     }catch(err){
         console.log(err)
@@ -133,7 +133,7 @@ const deleteCart = async (req, res) => {//elimina todos los productos del carrit
 }
 
 export default {
-    searchCart,
+    getCart,
     createCart,
     addProductInCart,
     putCart,

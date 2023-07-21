@@ -1,8 +1,14 @@
 import cartModel from "../models/cart.js";
 
 export default class CartManager{
-    createCart=()=>{
-        return cartModel.create({ products: [] });
+    createCart= async (cart)=>{
+        const {uid, products} = cart;
+        const cartCreated = await cartModel.create({user: uid})
+        if (products.length > 0){
+            products.forEach(product => cartCreated.products.push(product));
+        } 
+        cartCreated.save()
+        return cartCreated
     }
 
     getCarts=()=>{
@@ -11,6 +17,14 @@ export default class CartManager{
 
     getCartById=(cid)=>{//trae los productos del carrito, buscando por el id del carrito
         return cartModel.findOne({ _id: cid }).lean()
+    }
+
+    getCartsByUser = async (uid) => {
+        try {
+            return await cartModel.find({user: uid})
+        } catch (error) {
+            return error
+        }
     }
     
     addProductInCart = async (cid, productBody) => {

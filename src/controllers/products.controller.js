@@ -4,7 +4,7 @@ const productManager = new ProductManagerMongo();
 const getProducts = async (req, res) => {
     try{
       let { limit, page, sort, category } = req.query
-      console.log(req.originalUrl);
+      // console.log(req.originalUrl);
   
       const options = {
           page: Number(page) || 1,

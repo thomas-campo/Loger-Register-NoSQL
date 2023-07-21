@@ -2,9 +2,17 @@ import passport from "passport";
 import local from "passport-local";
 import GithubStrategy from "passport-github2";
 import userModel from "../dao/mongo/models/user.js";
-import UserManager from "../dao/mongo/manager/UserManagerMongo.js";
+import cartModel from "../dao/mongo/models/cart.js";
 import { createHash, validatePassword } from "../utils.js";
 import config from "../config.js"
+import dtoUser from "../dto/user.js";
+
+import CartManager from "../dao/mongo/manager/CartManagerMongo.js";
+import UserManager from "../dao/mongo/manager/UserManagerMongo.js";
+
+const userManager = new UserManager();
+const cartManager = new CartManager();
+
 
 const localStrategy = local.Strategy;
 
@@ -15,12 +23,14 @@ const initializePassport = ()=>{
             const exist = await userModel.findOne({email});
             if(exist) return done(null,false,{message:'este usuario ya existe'});
             const hashedPassword = await createHash(password);//encriptamos la contraseña
-            const user = {
-                first_name,
-                last_name,
-                email,
-                password:hashedPassword
-            }   
+            const user = new dtoUser(
+                {
+                    first_name,
+                    last_name,
+                    email,
+                    password:hashedPassword
+                }
+            )   
             const result = await userModel.create(user);
             done(null,result)
         }catch(error){
@@ -31,29 +41,49 @@ const initializePassport = ()=>{
     passport.use('login',new localStrategy({ usernameField: 'email' },async (email, password, done) => {
         try{
             if (email === config.admin.EMAIL && password === config.admin.PASSWORD) {
-                const user = {
-                  id: 0,
-                  name: `Admin`,
-                  role: 'admin',
-                  email: '...',
-                };
+                const user ={
+                        id: 0,
+                        name: `Admin`,
+                        role: 'admin',
+                        email: '...',
+                    };
                 return done(null, user);
-              }
-              let user;
+            }
+            let user;
       
-              user = await userModel.findOne({ email });
-              if (!user) return done(null, false, { message: 'Email incorrecto' });
+            user = await userModel.findOne({ email });
+            if (!user) return done(null, false, { message: 'Email incorrecto' });
       
-              const isValidPassword = await validatePassword(password, user.password);
-              if (!isValidPassword) return done(null, false, { message: 'Contraseña incorrecta' });
-      
-              user = {
+            const isValidPassword = await validatePassword(password, user.password);
+            if (!isValidPassword) return done(null, false, { message: 'Contraseña incorrecta' });
+
+            let existsCart = await cartManager.getCartsByUser(user._id)
+
+            async function handleCart() {
+                try{
+                    let newUserCart;
+                    if (existsCart.length === 0) {
+                    existsCart = await cartManager.createCart({ uid: user._id, products: [] });
+                    let newCart = await userManager.createCart({ uid: user._id, cid: existsCart._id });
+                            
+                    newUserCart = newCart.cart[0];
+                }
+                    return newUserCart;
+                }catch(err){
+                    console.log(err)
+                }
+            }
+                    
+            let cart = existsCart[0] ? existsCart[0]._id : await handleCart();
+
+            user = {
                 id: user._id,
                 name: `${user.first_name} ${user.last_name}`,
                 email: user.email,
                 role: user.role,
-              };
-              return done(null, user);
+                cart
+            };
+            return done(null, user);
         }catch(error){
             done(error);
         }
@@ -76,6 +106,14 @@ const initializePassport = ()=>{
                     password:''
                 }
                 const result = await userModel.create(newUser);
+                let existsCart = await cartManager.getCartsByUser(result._id)
+
+                if (existsCart.length === 0) {
+                    let newCart = await cartManager.createCart({ uid: result._id, products: [] })
+                    const addCartUser = await userManager.createCart({ uid: result._id, cid: newCart._id })
+
+                    return done(null, addCartUser);
+                }
                 done(null,result);
             }
             done(null,user);

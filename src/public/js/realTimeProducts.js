@@ -7,7 +7,6 @@ const addToCart = () => {
 
     arrayBtn.forEach(element => {
         element.addEventListener('click', () => {
-            console.log('click');
             Swal.fire({
                 title: 'quieres agregar el producto al carrito?',
                 showDenyButton: true,
@@ -22,11 +21,9 @@ const addToCart = () => {
                 }
             }).then((result) => {
                 if (result.isConfirmed) {
-                    console.log(element.id,"element.id");
-                    console.log(element._id,"element._id");
+                    console.log(element.id);
                     Swal.fire(`El producto se agrego al carrito. Id:${element.id}`, '', 'success');
                     socket.emit('agregar', element.id);
-
                 }
             })
 
@@ -62,12 +59,11 @@ socket.on('products', data => {
                                     thumbnail: ${producto.thumbnails}
                                 </li>
                             </p>
+                            <a class="agregarAlCarrito" id=${producto._id}><button>agregar al carrito</button></a>
                         </div>
                         </div>`
                     });
                     products.innerHTML = productos;
                     addToCart()
 });
-                // <div>
-                //     <button type="button" class="agregarAlCarrito" id="${producto._id}">agregar al carrito</button>
-                // </div>
+

@@ -17,6 +17,7 @@ const login = async(req,res)=>{
         id: req.user.id,
         email: req.user.email
     }
+    
     res.status(200).send({ status: 'success'});
 }
 

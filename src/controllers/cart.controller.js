@@ -1,12 +1,17 @@
+import { v4 as uuid } from "uuid"
 import CartManager from '../dao/mongo/manager/CartManagerMongo.js';
 import ProductManager from '../dao/mongo/manager/ProductManagerMongo.js';
+import UserManager from '../dao/mongo/manager/UserManagerMongo.js';
 import cartModel from '../dao/mongo/models/cart.js';
+import { ticketsService } from '../services/service.js';
 const productManager = new ProductManager();
 const cartManager = new CartManager();
+const userManager = new UserManager();
 
 const getCart = async(req, res) => {//buscar el carrito por id
     try{//listo
      const cid  = req.params.cid;
+     console.log(req.user,"user del cartcontroller getcart")
      const mycart = await cartManager.getCartById(cid);
      if(!mycart) return res.status(404).send("carrito no encontrado");
      return res.send(mycart)
@@ -72,24 +77,31 @@ const  putQuantity = async (req, res) => {//actualiza la cantidad que tiene un p
         let { cid, pid } = req.params
         const { quantity } = req.body
             
-        if (quantity < 1) return res.status(400).send({error:'la cantidad no puede ser menor que 1'})
-        
         const productId = await productManager.getProductById(pid);
-
+        
         if (!productId) return res.status(404).send({error:`no se encontro el producto con este id:${pid}`})
-    
+        
         const cartId = await cartManager.getCartById(cid)
 
         if (!cartId) return res.status(404).send({error:`no se encontro el carrito con este id: ${cid}`})
     
-        const addProduct = await cartManager.addProductInCart(cid, { _id: pid, quantity })
+        const result = cartId.products.findIndex(product => product._id._id.toString() === pid)
+
+        if (result === -1) return res.status(404).send({ status: 'error', payload: null, message: `el producto con el id ${pid} no se puede actualizar porque no se encuentra` })
         
-        return res.status(200).send({message:`el producto se agrego correctamente en el carrito`,addProduct});
+        if (quantity < 1) return res.status(400).send({error:'la cantidad no puede ser menor que 1'})
+
+        cartId.products[result].quantity = quantity
+
+        const cart = await cartManager.updateOneProduct(cid, cartId.products)
+
+        return res.status(200).send({message:`el producto se agrego correctamente en el carrito`,cart});
         
     } catch (error) {
         console.log(error);
     }
 }
+
 
 const deleteProductInCart = async (req, res) =>{//elimina un producto del carrito
     try {//listo
@@ -132,6 +144,52 @@ const deleteCart = async (req, res) => {//elimina todos los productos del carrit
     }
 }
 
+const purchaseCart = async (req,res) =>{
+    try {
+        const cid = req.params.cid
+
+        const { amount } = req.body
+
+        const cart = await cartManager.getCartById(cid)
+
+        const uid = cart.user.toString() 
+
+        const user = await userManager.getUserById(uid);
+
+        let productPurchase = [];
+        
+        let productsOutStock = [];
+
+        for (let product of cart.products) {
+            if (product._id.stock <= product.quantity) {
+                productsOutStock.push(product);
+            } else {
+                product._id.stock -= product.quantity
+                await productManager.updateProduct(product._id._id, product._id)
+                productPurchase.push(product);
+            }
+        }
+
+        const ticket = {
+            code: uuid(), 
+            cart: cid,
+            amount: amount,
+            purchaser: user.email
+        }
+
+        if (!amount) return res.status(403).send({ message: 'productos no encontrados' });
+
+        await ticketsService.createTicket(ticket)
+
+        await cartManager.updateProductsToCart(cid, productsOutStock);
+
+        return res.status(200).send(`compra finalizada`);
+    } catch (error) {
+        console.log("error del purchase")
+        return res.send(error)
+    }
+}
+
 export default {
     getCart,
     createCart,
@@ -139,5 +197,6 @@ export default {
     putCart,
     putQuantity,
     deleteProductInCart,
-    deleteCart
+    deleteCart,
+    purchaseCart
 }

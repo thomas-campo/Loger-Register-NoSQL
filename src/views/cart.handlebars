@@ -2,7 +2,7 @@
     <h1>Cart</h1>
     {{#if data}}
         <p>Id del carrito: {{data._id}}</p>
-        <button><a href="http://localhost:8000/products">volver a la lista de productos</a></button>
+        <a href="http://localhost:8000/products"><button>ver productos</button></a>
         {{#each data.products }}
 
             <div>
@@ -18,11 +18,10 @@
             </div>
 
         
-        {{/each}}
+        {{/each}}  
     {{else}}
         <h1>{{message}}</h1>
     {{/if}}
 </div>
 <script src="/socket.io/socket.io.js"></script>
-<script src="/js/product.js"></script>
 <script src="/js/realTimeCart.js"></script>

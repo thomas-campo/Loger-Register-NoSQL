@@ -18,6 +18,7 @@ const getHome =  async (req,res)=>{//render de home.handlebars
 
 const getProducts = async (req, res) => {
     try {
+        console.log(req.session.user,"usuario, getproducts viewscontroller");
         const { page = 1 } = req.query;
         const { docs, hasPrevPage, hasNextPage, prevPage, nextPage, ...rest } = await ProdModel.paginate({}, { page, limit: 10, lean: true })
         const products = docs;
@@ -31,13 +32,13 @@ const getProducts = async (req, res) => {
 
 const getCartById = async (req,res)=>{
     try {
+        console.log(req.session.user,"reqsessionuser del viewscontroller getcartbyid")
         const { cid } = req.params
         const result = await cartManager.getCartById(cid)
         
         if(!result) return res.render('cart', { result: false, message: 'no se econtro el carrito '});
 
         const data = await cartManager.getCartById(cid);
-        console.log(data);
         return res.render('cart', {data});
 
     } catch (err) {

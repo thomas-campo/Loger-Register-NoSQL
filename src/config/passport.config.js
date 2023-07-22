@@ -2,7 +2,6 @@ import passport from "passport";
 import local from "passport-local";
 import GithubStrategy from "passport-github2";
 import userModel from "../dao/mongo/models/user.js";
-import cartModel from "../dao/mongo/models/cart.js";
 import { createHash, validatePassword } from "../utils.js";
 import config from "../config.js"
 import dtoUser from "../dto/user.js";

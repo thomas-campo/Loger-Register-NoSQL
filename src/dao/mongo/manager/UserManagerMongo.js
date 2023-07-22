@@ -25,8 +25,8 @@ export default class UserManager{
         return userModel.findOne({email});
     }
 
-    getUserById=(id)=>{//trae los productos del carrito, buscando por el id del carrito
-        return userModel.findOne({ _id: id }).lean()
+    getUserById=(id)=>{
+        return userModel.findOne({ _id: id }).lean();
     }
 
     updatePassword=(email,newHasedPassword)=>{

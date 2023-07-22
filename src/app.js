@@ -62,27 +62,4 @@ io.on('connection',async socket=>{
     socket.on("product",data=>{
         console.log(data,"aca esta la data");
     })
-    socket.on('agregar',async data =>{
-        console.log("hola")
-        const pid = data;
-        const cid = "64751796ba779febe906b108";
-        const quantity = 1;
-    
-        console.log(pid,"pid");
-        const productId = await productManager.getProductById(pid);
-        
-        if (!productId) return console.log("error al buscar el producto");
-    
-        const cartId = await cartManager.getCartById(cid);
-
-        if (!cartId) return console.log("error al buscar el carrito");
-        const result = await cartManager.addProductInCart(cid, { _id: pid, quantity });
-        console.log(result,"resultado agregar al carrito");
-    });
-
-    socket.on('delete', async data => {
-        await cartManager.deleteProductToCart(data);
-        const products = await productManager.getProducts();
-        socket.emit('products', { products });  
-    })
 })

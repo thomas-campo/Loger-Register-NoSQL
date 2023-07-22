@@ -2,28 +2,28 @@ export default class CartService {
     constructor(dao){
         this.dao = dao;
     }
-    createCartService = (cart) => {
+    createCart = (cart) => {
         return this.dao.createCart(cart)
     }
-    getCartsService = () => {
+    getCarts = () => {
         return this.dao.getCarts();
     }
-    getCartByIdService = (cid) => {
+    getCartById = (cid) => {
         return this.dao.getCartById(cid);
     }
-    getCartsByUserService = (uid) => {
+    getCartsByUser = (uid) => {
         return this.dao.getCartsByUser(uid)
     }
-    addProductInCartService = (cid, productBody) => {
+    addProductInCart = (cid, productBody) => {
         return this.dao.addProductInCart(cid, productBody)
     }
-    deleteProductInCartService = (cid, products) => {
+    deleteProductInCart = (cid, products) => {
         return this.dao.deleteProductToCart(cid, products)
     }
-    updateProductsToCartService = (cid, products) => {
+    updateProductsToCart = (cid, products) => {
         return this.dao.updateProductsToCart(cid, products)
     }
-    updateOneProductService = (cid, products) => {
+    updateOneProduct = (cid, products) => {
         return this.dao.updateOneProduct(cid, products)
     }
 }

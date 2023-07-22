@@ -23,20 +23,18 @@
     </div>
 </div> --}}
 <div>
-  {{#if user}}
     <div class="row card shadow m-5">
       <div>
         <h1>{{user.name}} </h1>
         <p>Correo: {{user.email}} </p>
         <a href="/api/sessions/logout"><button>cerrar sesion</button></a>
-        <a href="http://localhost:8000/cart/64751796ba779febe906b108"><button>ir al carrito(Ejemplo id:64751796ba779febe906b108)</button></a>
+        <a href="http://localhost:8000/cart/64ba3998f809c2d083af4673"><button>ir al carrito(Ejemplo id:64751796ba779febe906b108)</button></a>
       </div>
     </div>
-  {{/if}}
   <div>
     <h2>Lista de Productos</h2>
 
-    <div id="listProducts">
+    <div class={{user.id}} id="listProducts">
     {{#each allProducts}}
         <div>
             
@@ -53,6 +51,7 @@
         </div>
     {{/each}}
     </div>
+    <br>
     {{#if hasPrevPage}}
       <a href="/products?page={{prevPage}}"><button>Anterior</button></a>
 
@@ -67,5 +66,4 @@
 
   </div>
 <script src="/socket.io/socket.io.js"></script>
-{{!-- <script src="/js/realTimeProducts.js"></script> --}}
 <script src="/js/product.js"></script>

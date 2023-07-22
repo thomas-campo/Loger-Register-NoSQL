@@ -17,8 +17,6 @@ routerCart.delete('/:cid/product/:pid',cartController.deleteProductInCart)
 
 routerCart.delete('/:cid',cartController.deleteCart)
 
-routerCart.post('/:cid/purchase',(req,res)=>{
-
-})
+routerCart.post('/:cid/purchase',cartController.purchaseCart)
 
 export default routerCart;

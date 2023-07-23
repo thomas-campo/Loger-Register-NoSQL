@@ -148,7 +148,7 @@ const purchaseCart = async (req,res) =>{
     try {
         const cid = req.params.cid
 
-        const { amount } = req.body
+        let amount = 0;
 
         const cart = await cartManager.getCartById(cid)
 
@@ -164,7 +164,8 @@ const purchaseCart = async (req,res) =>{
             if (product._id.stock <= product.quantity) {
                 productsOutStock.push(product);
             } else {
-                product._id.stock -= product.quantity
+                amount = amount + product.quantity;
+                product._id.stock -= product.quantity;
                 await productManager.updateProduct(product._id._id, product._id)
                 productPurchase.push(product);
             }

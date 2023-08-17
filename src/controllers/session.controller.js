@@ -1,9 +1,11 @@
 import { createHash, validatePassword } from "../utils.js";
 import userModel from "../dao/mongo/models/user.js";
-import UserService from "../services/repository/user.service.js";
-import restoreRequestUser from "../dto/restoreRequestUser.js"
+import { UserService } from "../services/service.js";
 import MailingService from "../services/mailingService.js";
 import DTemplates from "../constants/DTemplates.js";
+import { generateToken } from "../services/auth.js";
+import RestoreTokenDTO from "../dto/restoreTokenDTO.js";
+import jwt from 'jsonwebtoken';
 
 const register = async(req,res)=>{
     res.send({status:"success",message:"registrado"});
@@ -58,13 +60,12 @@ const restoreRequest = async(req,res)=>{
     const {email} = req.body;
     if(!email) return res.status(400).send({status:"error",error:"no se proporciono un correo"});
     const user = await UserService.getUserByService({email});
-    if(user) return res.status(400).send({status:"error",error:"Este correo no esta asociado a una cuenta"});
-    req.session.user = new restoreRequestUser.getFrom(user);
-    const cookie = req.session.user;
+    if(!user) return res.status(400).send({status:"error",error:"Este correo no esta asociado a una cuenta"});
+    const restoreToken = generateToken(RestoreTokenDTO.getFrom(user));
     const mailingService = new MailingService();
-    const result = await mailingService.sendMail(user.email,DTemplates.RESTORE,{cookie});
+    const result = await mailingService.sendMail(user.email,DTemplates.RESTORE,{restoreToken});
     console.log(result);
-    res.send("success")
+    res.status(200).send({ status: 'success'});
 }
 
 const restorePassword = async(req,res)=>{

@@ -3,7 +3,7 @@ import local from "passport-local";
 import GithubStrategy from "passport-github2";
 import userModel from "../dao/mongo/models/user.js";
 import { createHash, validatePassword } from "../utils.js";
-import config from "../config.js"
+import config from "./config.js"
 import dtoUser from "../dto/user.js";
 
 import CartManager from "../dao/mongo/manager/CartManagerMongo.js";
@@ -12,6 +12,7 @@ import UserManager from "../dao/mongo/manager/UserManagerMongo.js";
 const userManager = new UserManager();
 const cartManager = new CartManager();
 
+//agregar el id del carrito al usuario model ,despues de crear el carrito con el id del usuario
 
 const localStrategy = local.Strategy;
 

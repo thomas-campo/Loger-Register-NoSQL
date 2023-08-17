@@ -3,6 +3,7 @@ import { dirname } from 'path';
 import bcrypt from 'bcrypt';
 import fs from "fs";
 import Handlebars from 'handlebars';
+import config from './config/config.js';
 
 export const createHash = async(password)=>{
     const salts = await bcrypt.genSalt(10);
@@ -10,6 +11,14 @@ export const createHash = async(password)=>{
 }
 
 export const validatePassword = (password,hashedPassword)=> bcrypt.compare(password,hashedPassword);
+
+export const cookieExtractor = (req) =>{
+    let token = null;
+    if(req&&req.cookies) {
+        token = req.cookies[config.jwt.COOKIE]
+    }
+    return token;
+}
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -20,7 +29,5 @@ export const generateMailTemplate = async(template,payload) =>{
     const compiledContent = precompiledContent({...payload});
     return compiledContent;
 }
-
-
 
 export default __dirname;

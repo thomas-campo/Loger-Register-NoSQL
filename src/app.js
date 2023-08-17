@@ -5,7 +5,7 @@ import session from "express-session";
 import MongoStore from "connect-mongo";
 import mongoose from "mongoose";
 import passport from "passport";
-import config from './config.js';
+import config from './config/config.js';
 
 import ProductManager from "./dao/mongo/manager/ProductManagerMongo.js";
 

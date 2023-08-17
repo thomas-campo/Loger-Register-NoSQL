@@ -1,5 +1,5 @@
 import nodemailer from 'nodemailer';
-import config from '../config.js';
+import config from '../config/config.js';
 import DMailInfo from '../constants/DMailInfo.js';
 import { generateMailTemplate } from '../utils.js';
 
@@ -19,7 +19,7 @@ export default class MailingService {
         const mailInfo = DMailInfo[template];
         const html = await generateMailTemplate(template,payload);
         const result = await this.mailer.sendMail({
-            from:`Coder - <${config.mailer.USER}>`,
+            from:`Coder - <thomascampocood@gmail.com>`,
             to: emails,
             html,
             ...mailInfo

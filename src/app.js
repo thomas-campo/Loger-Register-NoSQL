@@ -40,7 +40,7 @@ app.set('view engine','handlebars');
 app.use(session({
     store: new MongoStore({
         mongoUrl:config.mongo.URL,
-        ttl:50000
+        ttl:5000
     }),
     secret:"CoderS3cr3t",
     resave:false,

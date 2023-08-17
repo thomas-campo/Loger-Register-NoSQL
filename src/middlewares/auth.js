@@ -10,6 +10,9 @@ export const privacity = (privaticyType) =>{
                 if(!user) next();
                 else res.redirect('/products');
                 break;
+            case "PUBLIC":
+                next();
+                break;
         }
     }
 }

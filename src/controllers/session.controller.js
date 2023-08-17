@@ -1,5 +1,9 @@
 import { createHash, validatePassword } from "../utils.js";
 import userModel from "../dao/mongo/models/user.js";
+import UserService from "../services/repository/user.service.js";
+import restoreRequestUser from "../dto/restoreRequestUser.js"
+import MailingService from "../services/mailingService.js";
+import DTemplates from "../constants/DTemplates.js";
 
 const register = async(req,res)=>{
     res.send({status:"success",message:"registrado"});
@@ -17,6 +21,7 @@ const login = async(req,res)=>{
         id: req.user.id,
         email: req.user.email
     }
+    console.log(req.session)
     
     res.status(200).send({ status: 'success'});
 }
@@ -49,6 +54,19 @@ const githubCallback = (req,res)=>{
     res.status(200).redirect('/products');
 }
 
+const restoreRequest = async(req,res)=>{
+    const {email} = req.body;
+    if(!email) return res.status(400).send({status:"error",error:"no se proporciono un correo"});
+    const user = await UserService.getUserByService({email});
+    if(user) return res.status(400).send({status:"error",error:"Este correo no esta asociado a una cuenta"});
+    req.session.user = new restoreRequestUser.getFrom(user);
+    const cookie = req.session.user;
+    const mailingService = new MailingService();
+    const result = await mailingService.sendMail(user.email,DTemplates.RESTORE,{cookie});
+    console.log(result);
+    res.send("success")
+}
+
 const restorePassword = async(req,res)=>{
     const {email,password} = req.body;
     const user = await userModel.findOne({email});
@@ -68,5 +86,6 @@ export default {
     logout,
     github,
     githubCallback,
+    restoreRequest,
     restorePassword
 }

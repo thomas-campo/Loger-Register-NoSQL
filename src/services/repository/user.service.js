@@ -1,4 +1,4 @@
-export default class UserService{
+export default class UserRepository{
     constructor(dao){
         this.dao = dao;
     }
@@ -13,6 +13,9 @@ export default class UserService{
     }
     getUserByEmailService = (email) => {
         return this.dao.getUserByEmail(email)
+    }
+    getUserByService = (params) =>{
+        return this.dao.getUserBy(params)
     }
     getUserByIdService = (id) => {
         return this.dao.getUserById(id)

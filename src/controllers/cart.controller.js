@@ -3,7 +3,7 @@ import CartManager from '../dao/mongo/manager/CartManagerMongo.js';
 import ProductManager from '../dao/mongo/manager/ProductManagerMongo.js';
 import UserManager from '../dao/mongo/manager/UserManagerMongo.js';
 import cartModel from '../dao/mongo/models/cart.js';
-import { ticketsService } from '../services/service.js';
+import TicketService from "../services/repository/ticket.service.js";
 const productManager = new ProductManager();
 const cartManager = new CartManager();
 const userManager = new UserManager();
@@ -180,7 +180,7 @@ const purchaseCart = async (req,res) =>{
 
         if (!amount) return res.status(403).send({ message: 'productos no encontrados' });
 
-        await ticketsService.createTicket(ticket)
+        await TicketsService.createTicket(ticket)
 
         await cartManager.updateProductsToCart(cid, productsOutStock);
 

@@ -60,6 +60,10 @@ const getProfile = async(req,res)=>{
     })
 }
 
+const getRestoreRequest = (req,res)=>{
+    res.render('restoreRequest')
+}
+
 const getRestorePassword = (req,res)=>{
     res.render('restorePassword')
 }
@@ -71,5 +75,6 @@ export default {
     getRegister,
     getLogin,
     getProfile,
+    getRestoreRequest,
     getRestorePassword
 }

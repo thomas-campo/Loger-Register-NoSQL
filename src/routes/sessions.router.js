@@ -1,6 +1,5 @@
 import { Router } from "express";
 import passport from "passport";
-import UserManager from "../dao/mongo/manager/UserManagerMongo.js";
 import sessionController from "../controllers/session.controller.js";
 
 const router = Router();
@@ -16,6 +15,8 @@ router.get('/logout',sessionController.logout);
 router.get('/github',passport.authenticate('github'),sessionController.github);
 
 router.get('/githubcallback',passport.authenticate('github'),sessionController.githubCallback);
+
+router.post('/restoreRequest',sessionController.restoreRequest);
 
 router.post('/restorePassword',sessionController.restorePassword);
 

@@ -22,7 +22,11 @@ export default class UserManager{
     }
 
     getUserByEmail=(email)=>{
-        return userModel.findOne({email});
+        return userModel.findOne({email}).lean();
+    }
+
+    getUserBy = (params) =>{
+        return userModel.findOne(params).lean();
     }
 
     getUserById=(id)=>{

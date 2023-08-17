@@ -1,7 +1,9 @@
+import  jwt  from "jsonwebtoken";
 import ProductManager from "../dao/mongo/manager/ProductManagerMongo.js";
 import CartManager from "../dao/mongo/manager/CartManagerMongo.js";
 
 import ProdModel from '../dao/mongo/models/product.js';
+import config from "../config/config.js";
 
 const productManager = new ProductManager();
 const cartManager = new CartManager();
@@ -65,7 +67,13 @@ const getRestoreRequest = (req,res)=>{
 }
 
 const getRestorePassword = (req,res)=>{
-    res.render('restorePassword')
+    const {token} = req.query;
+    try{
+        const validToken = jwt.verify(token,config.jwt.SECRET);
+        res.render('restorePassword');
+    }catch(error){
+        return res.render('InvalidToken');
+    }
 }
 
 export default {

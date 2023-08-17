@@ -62,7 +62,7 @@ const restoreRequest = async(req,res)=>{
     if(!email) return res.status(400).send({status:"error",error:"no se proporciono un correo"});
     const user = await UserService.getUserByService({email});
     if(!user) return res.status(400).send({status:"error",error:"Este correo no esta asociado a una cuenta"});
-    const restoreToken = generateToken(RestoreTokenDTO.getFrom(user));
+    const restoreToken = generateToken(RestoreTokenDTO.getFrom(user),'1h');
     console.log(restoreToken)
     const mailingService = new MailingService();
     const result = await mailingService.sendMail(user.email,DTemplates.RESTORE,{restoreToken});

@@ -36,4 +36,8 @@ export default class UserManager{
     updatePassword=(email,newHasedPassword)=>{
         return userModel.updateOne({email},{$set:{password:newHasedPassword}});
     }
+
+    updateUser = (id, user) => {
+        return userModel.findByIdAndUpdate(id, { $set: user });
+    }
 }

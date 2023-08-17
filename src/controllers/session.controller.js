@@ -1,3 +1,4 @@
+import jwt from 'jsonwebtoken';
 import { createHash, validatePassword } from "../utils.js";
 import userModel from "../dao/mongo/models/user.js";
 import { UserService } from "../services/service.js";
@@ -5,7 +6,7 @@ import MailingService from "../services/mailingService.js";
 import DTemplates from "../constants/DTemplates.js";
 import { generateToken } from "../services/auth.js";
 import RestoreTokenDTO from "../dto/restoreTokenDTO.js";
-import jwt from 'jsonwebtoken';
+import config from '../config/config.js';
 
 const register = async(req,res)=>{
     res.send({status:"success",message:"registrado"});
@@ -62,21 +63,26 @@ const restoreRequest = async(req,res)=>{
     const user = await UserService.getUserByService({email});
     if(!user) return res.status(400).send({status:"error",error:"Este correo no esta asociado a una cuenta"});
     const restoreToken = generateToken(RestoreTokenDTO.getFrom(user));
+    console.log(restoreToken)
     const mailingService = new MailingService();
     const result = await mailingService.sendMail(user.email,DTemplates.RESTORE,{restoreToken});
     console.log(result);
-    res.status(200).send({ status: 'success'});
+    res.send({ status: 'success'});
 }
 
 const restorePassword = async(req,res)=>{
-    const {email,password} = req.body;
-    const user = await userModel.findOne({email});
-    if(!user) return res.status(400).send({status:"error",error:"Usuario no encontrado"});
-    const samePassword = await validatePassword(password,user.password);
-    if(samePassword) return res.status(400).send({status:"error",error:"Escribiste la misma contraseña"});
-    const newHasedPassword = await createHash(password);
-    await userModel.updateOne({email},{$set:{password:newHasedPassword}});
-    res.status(200).send({ status: 'success'});
+    const {password,token} = req.body;
+    try{
+        const tokenUser = jwt.verify(token,config.jwt.SECRET);
+        const user = await UserService.getUserByService({email: tokenUser.email});
+        const isSamePassword = await validatePassword(password,user.password);
+        if(isSamePassword) return res.status(400).send({status:"error",error:"su contraseña es la misma"});
+        const newHashedPassword = await createHash(password);
+        await UserService.update(user._id,{password:newHashedPassword})
+        res.send({status:"success",message:"Contraseña cambiada"});
+    }catch(error){
+        console.log(error);
+    }
 }
 
 export default {

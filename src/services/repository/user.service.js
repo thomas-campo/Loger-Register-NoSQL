@@ -23,4 +23,7 @@ export default class UserRepository{
     updatePasswordService = (email,newHasedPassword) => {
         return this.dao.updatePassword(email,newHasedPassword)
     }
+    update = (id,user) =>{
+        return this.dao.updateUser(id,user);
+    }
 }

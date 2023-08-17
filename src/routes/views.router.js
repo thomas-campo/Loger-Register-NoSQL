@@ -18,6 +18,6 @@ router.get('/profile',privacity('PRIVATE'),viewsController.getProfile)
 
 router.get('/restoreRequest',privacity('PUBLIC'),viewsController.getRestoreRequest)
 
-router.get('/restorePassword',privacity('NO_AUTHENTICATED'),viewsController.getRestorePassword)
+router.get('/restorePassword',privacity('PUBLIC'),viewsController.getRestorePassword)
 
 export default router;

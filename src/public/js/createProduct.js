@@ -1,4 +1,4 @@
-const form = document.getElementById('registerForm');
+const form = document.getElementById('createProductForm');
 const text = document.getElementById('message');
 
 form.addEventListener('submit',async (event)=>{
@@ -6,18 +6,18 @@ form.addEventListener('submit',async (event)=>{
   const data = new FormData(form);
   const obj = {};
   data.forEach((value,key)=>(obj[key] = value));
-  const response = await fetch('/api/sessions/register',{
+  const response = await fetch('/api/products',{
     method:'POST',
     body:JSON.stringify(obj),
     headers:{
-      "Content-Type":"application/json"
+        "Content-Type":"application/json"
     }
   })
   const responseData = await response.json();
   if(responseData.status==="success"){
-    text.innerHTML = "se ha enviado un correo de verificación"
-    // window.location.replace('/login');
+    form.reset()
+    text.innerHTML = "Producto creado"
   }else{
-    text.innerHTML = "Error al registrarse";
+    text.innerHTML = "Error al crear el product"
   }
 })

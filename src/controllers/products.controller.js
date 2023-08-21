@@ -59,13 +59,12 @@ const getProducts = async (req, res) => {
 
 const createProduct = async (req, res) => {
     try{
-      const { title, description, price, category, thumbnail, code, stock } = req.body;
+      const { title, description, price, category, thumbnail, code, stock, owner } = req.body;
       const products = await productManager.getProducts();
       const productExist = req.body;
       if(!title||!description||!price||!category||!thumbnail||!code) return res.status(400).send({status:"error",error:"Valores incompletos",title,description,price,category,thumbnail,code})
       const exist = products.find( p => p.code === productExist.code)
       if(exist){
-        console.log('el producto ya existe')
         return res.send({status:"error",error:"producto ya existente"});
       }
       const product = {
@@ -75,14 +74,13 @@ const createProduct = async (req, res) => {
         category,
         thumbnail,
         code,
-        stock
+        stock,
+        owner
       }
       const result = await productManager.createProduct(product);
-      const arrayProducts = await productManager.getProducts();
-      req.io.emit('products',arrayProducts);
       res.status(201).send({status:"success",payload:result});  
     }catch(error){
-      res.status(500).send({error:"error interno del servidor"})
+      res.status(500).send({error:"Error interno del servidor en create product"})
     }
 }
 
@@ -102,11 +100,9 @@ const updateProductById = async(req,res)=>{
       const {pid} = req.params;
       const updateProduct = req.body;
       await productManager.updateProduct(pid,updateProduct);
-      const arrayProducts = await productManager.getProducts();
-      req.io.emit('products',arrayProducts);
-      res.sendStatus(201);
+      res.status(200).send({message:"Se modifico con exito"});
     }catch{
-      res.status(500).send({error:"error interno del servidor"})
+      res.status(500).send({error:"Error interno del servidor"})
     }
 }
 
@@ -115,7 +111,7 @@ const deleteProductById = async(req,res)=>{
       const {pid} = req.params;
       await productManager.deleteProduct(pid);
       const arrayProducts = await productManager.getProducts();
-      req.io.emit('products',arrayProducts);
+      // req.io.emit('products',arrayProducts);
       res.send({status:'success', payload:arrayProducts});
     }catch(error){
       res.status(500).send({error:"error interno del servidor"})

@@ -21,7 +21,7 @@ const initializePassport = ()=>{
         try{
             const {first_name,last_name} = req.body;
             const exist = await userModel.findOne({email});
-            if(exist) return done(null,false,{message:'este usuario ya existe'});
+            if(exist) return done(null,false,{message:'Este usuario ya existe'});
             const hashedPassword = await createHash(password);//encriptamos la contraseña
             const user = new dtoUser(
                 {

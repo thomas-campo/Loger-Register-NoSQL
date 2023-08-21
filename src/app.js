@@ -16,6 +16,8 @@ import productsRouterMongo from "./routes/products.router.js"
 // import cartRouter from "./routes/cart.router.js"
 import cartRouterMongo from "./routes/cart.router.js"
 import sessionsRouter from "./routes/sessions.router.js"
+import userRouter from "./routes/users.router.js"
+
 import initializePassport from "./config/passport.config.js";
 
 import __dirname from './utils.js';
@@ -54,6 +56,7 @@ app.use('/',viewsRouterMongo);
 app.use('/api/products',productsRouterMongo);
 app.use('/api/carts',cartRouterMongo);
 app.use('/api/sessions',sessionsRouter);
+app.use('/api/users',userRouter)
 
 io.on('connection',async socket=>{
     const arrayProducts =  await productManager.getProducts();

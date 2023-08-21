@@ -1,13 +1,14 @@
-const form = document.getElementById('registerForm');
+const form = document.getElementById('updateProductForm');
 const text = document.getElementById('message');
 
 form.addEventListener('submit',async (event)=>{
   event.preventDefault();
   const data = new FormData(form);
   const obj = {};
+  console.log(obj,"aca esta el objeto")
   data.forEach((value,key)=>(obj[key] = value));
-  const response = await fetch('/api/sessions/register',{
-    method:'POST',
+  const response = await fetch(`/api/products/`,{
+    method:'PUT',
     body:JSON.stringify(obj),
     headers:{
       "Content-Type":"application/json"
@@ -15,9 +16,8 @@ form.addEventListener('submit',async (event)=>{
   })
   const responseData = await response.json();
   if(responseData.status==="success"){
-    text.innerHTML = "se ha enviado un correo de verificación"
-    // window.location.replace('/login');
+    text.innerHTML = "Producto modificado con exito"
   }else{
-    text.innerHTML = "Error al registrarse";
+    text.innerHTML = "Error al modificar el producto"
   }
 })

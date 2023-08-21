@@ -1,15 +1,15 @@
 const listProducts = document.getElementById("listProducts")
 
-
-listProducts.addEventListener('click', e => {
-    addCarrito(e)
-})
-const addCarrito = (e) => {
-    if(e.target.classList.contains('agregarAlCarrito')){
-        console.log(e.target.parentElement)
-        // setCart(e.target.parentElement)
-    }
-}
+// listProducts.addEventListener('click', e => {
+//     // addCarrito(e)
+//     addToCarritoItem(e)
+// })
+// const addCarrito = (e) => {
+//     if(e.target.classList.contains('agregarAlCarrito')){
+//         console.log(e.target.parentElement)
+//         // setCart(e.target.parentElement)
+//     }
+// }
 
 // const setCart = obj =>{
 //     const product = {
@@ -22,8 +22,13 @@ const addCarrito = (e) => {
 // }
 
 
-// function addToCarritoItem(e){
-//     const button = e.target
+// const addToCarritoItem = (e) => {
+//     if(e.target.classList.contains('agregarAlCarrito')){
+//                 console.log(e.target.parentElement)
+//                 // setCart(e.target.parentElement)
+//     }
+//     const button = e.target.parentElement
+//     console.log(e.target.parentElement)
 //     console.log(item,"item")
 //     console.log(button,"boton")
 //     const item = button.closest(`.card`)
@@ -36,21 +41,3 @@ const addCarrito = (e) => {
 //     }
 //     console.log(newItem);
 // }
-    
-    // form.addEventListener('submit',async (event)=>{
-    //     event.preventDefault();
-    //     const data = new FormData(form);
-    //     const obj = {};
-    //     data.forEach((value,key)=>(obj[key] = value));
-    //     const response = await fetch(`/api/carts/:${cid}/product/:${pid}`,{
-    //       method:'POST',
-    //       body:JSON.stringify(obj),
-    //       headers:{
-    //           "Content-Type":"application/json"
-    //       }
-    //     })
-    //     const responseData = await response.json();
-    //     if(responseData.status==="success"){
-    //       window.location.replace('/products');//redirijo a los productos
-    //     }
-    //   })

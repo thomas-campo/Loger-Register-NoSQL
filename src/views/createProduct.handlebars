@@ -1,0 +1,47 @@
+<div>
+    <h1>Borrar tus productos</h1>
+    <p>Usuario: {{this.name}}</p>
+    <p>Correo: {{this.email}} </p>
+    <p>Rol: {{this.role}}</p>
+    <a href="/api/sessions/logout"><button>cerrar sesion</button></a>
+    <a href="/products"><button>Volver</button></a>       
+</div>
+<div>
+    <h1>Crea un nuevo producto</h1>
+
+    <form id="createProductForm">
+        <label>Titulo</label>
+        <input name="title">
+        <br>
+
+        <label>Descripcion</label>
+        <input name="description">
+        <br>
+
+        <label>Precio</label>
+        <input type="number" name="price">
+        <br>
+
+        <label>Categoria</label>
+        <input name="category">
+        <br>
+
+        <label>Thumbnail</label>
+        <input name="thumbnail">
+        <br>
+
+        <label>Code</label>
+        <input type="number" name="code">
+        <br>
+
+        <label>Stock</label>
+        <input type="number" name="stock">
+        <br>
+
+        <input type="submit">
+        <br>
+    </form>
+    <p id="message"></p>
+</div>
+
+<script src="/js/createProduct.js"></script>

@@ -8,7 +8,10 @@ const schema = new mongoose.Schema({
 	description:String,
 	price:Number,
 	category:String,
-	thumbnail:String,
+	thumbnail:{
+        type:String,
+        default:'sin info'
+    },
 	code:Number,
 	stock:{
         type:Number,
@@ -17,6 +20,10 @@ const schema = new mongoose.Schema({
 	status:{
         type:Boolean,
         default:'true'
+    },
+    owner:{
+        type:String,
+        default:'admin'
     }
 },{timestamps: { createdAt: 'created_at', updateAt: 'updated_at' }}
 );

@@ -11,4 +11,6 @@ router.post('/', ticketController.postTicketController)
 
 router.delete('/:tid', ticketController.deleteTicketController)
 
-router.put('/:tid', ticketController.updateTicketController)
+router.put('/:tid', ticketController.updateTicketController);
+
+export default router;

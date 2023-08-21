@@ -8,11 +8,13 @@ import config from "../config/config.js";
 const productManager = new ProductManager();
 const cartManager = new CartManager();
 
-const getHome =  async (req,res)=>{//render de home.handlebars
+const getHome =  async (req,res)=>{
     try{
-        if(!req.session.user) return res.redirect('/login');
-        const products = await productManager.getProducts()
-        res.render('home', { products })
+        console.log(req.session.user,"usuario, getproducts viewscontroller");
+        const { page = 1 } = req.query;
+        const { docs, hasPrevPage, hasNextPage, prevPage, nextPage, ...rest } = await ProdModel.paginate({}, { page, limit: 10, lean: true })
+        const products = docs;
+        res.render("home", { allProducts: products, page: rest.page, hasPrevPage, hasNextPage, prevPage, nextPage });
     }catch(err){
         res.status(500).send(err)
     }
@@ -20,13 +22,24 @@ const getHome =  async (req,res)=>{//render de home.handlebars
 
 const getProducts = async (req, res) => {
     try {
-        console.log(req.session.user,"usuario, getproducts viewscontroller");
+        if(!req.session.user) return res.redirect('/login');
+        const userData = req.session.user;
         const { page = 1 } = req.query;
         const { docs, hasPrevPage, hasNextPage, prevPage, nextPage, ...rest } = await ProdModel.paginate({}, { page, limit: 10, lean: true })
         const products = docs;
-        const userData = req.session.user;
-        if(!req.session.user) return res.redirect('/login');
-        return res.render("products", { allProducts: products, page: rest.page, hasPrevPage, hasNextPage, prevPage, nextPage, user: userData });
+        if(userData.role==="user"){
+            const rolUser = true;
+            return res.render("products", { allProducts: products, page: rest.page, hasPrevPage, hasNextPage, prevPage, nextPage, user: userData, rolUser });
+        }
+        if(userData.role==="premium"){
+            const rolPremium = true;
+            return res.render("products", { allProducts: products, page: rest.page, hasPrevPage, hasNextPage, prevPage, nextPage, user: userData, rolPremium });
+        }
+        if(userData.role==="admin"){
+            const rolAdmin = true;
+            return res.render("products", { allProducts: products, page: rest.page, hasPrevPage, hasNextPage, prevPage, nextPage, user: userData, rolAdmin });
+        }
+        res.render("No tienes ningun rol asignado");
     } catch (error) {
         console.log(error);
     }
@@ -76,6 +89,43 @@ const getRestorePassword = (req,res)=>{
     }
 }
 
+const getCreateProduct = (req,res)=>{
+    if(!req.session.user) return res.redirect('/login');
+    const user = req.session.user;
+    console.log(user)
+    if(user.role==="premium"||user.role==="admin"){
+        return res.render('createProduct', user );
+    }
+    res.render("No estas autorizado");
+}
+
+const getUpdateProduct = (req,res)=>{
+    if(!req.session.user) return res.redirect('/login');
+    res.render('updateProduct');
+}
+
+const getDeleteProduct = async(req,res) =>{
+    try {
+        if(!req.session.user) return res.redirect('/login');
+        const userData = req.session.user;
+        const { page = 1 } = req.query;
+        const { docs, hasPrevPage, hasNextPage, prevPage, nextPage, ...rest } = await ProdModel.paginate({}, { page, limit: 10, lean: true })
+        const products = docs;
+        console.log(products)
+        if(userData.role==="premium"){//solo los productos que el creo
+            const rolPremium = true;
+            return res.render("deleteproduct", { allProducts: products, page: rest.page, hasPrevPage, hasNextPage, prevPage, nextPage, user: userData, rolPremium });
+        }
+        if(userData.role==="admin"){//todoslos productos
+            const rolAdmin = true;
+            return res.render("deleteproduct", { allProducts: products, page: rest.page, hasPrevPage, hasNextPage, prevPage, nextPage, user: userData, rolAdmin });
+        }
+        res.render("No estas autorizado");
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 export default {
     getHome,
     getProducts,
@@ -84,5 +134,8 @@ export default {
     getLogin,
     getProfile,
     getRestoreRequest,
-    getRestorePassword
+    getRestorePassword,
+    getCreateProduct,
+    getUpdateProduct,
+    getDeleteProduct
 }

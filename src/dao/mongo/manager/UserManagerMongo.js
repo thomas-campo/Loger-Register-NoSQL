@@ -9,7 +9,8 @@ export default class UserManager{
         try {
             const { uid, cid } = cart;
             const user = await this.getUserById(uid);
-            user.carts.push(cid);
+            const userUpdate = await this.updateUser(uid,{ cart: user })
+            user.cart.push(cid);
             await user.save();
             return user;
         } catch (error) {
@@ -34,10 +35,14 @@ export default class UserManager{
     }
 
     updatePassword=(email,newHasedPassword)=>{
-        return userModel.updateOne({email},{$set:{password:newHasedPassword}});
+        return userModel.updateOne({email},{$set:{password:newHasedPassword}}).lean();
+    }
+
+    updateCartInUser=(id,cid)=>{
+        return userModel.findByIdAndUpdate( id ,{ cart:cid }).lean();
     }
 
     updateUser = (id, user) => {
-        return userModel.findByIdAndUpdate(id, { $set: user });
+        return userModel.findByIdAndUpdate(id, { $set: user }).lean();
     }
 }

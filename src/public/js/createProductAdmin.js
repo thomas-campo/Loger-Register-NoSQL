@@ -1,22 +1,23 @@
-const form = document.getElementById('registerForm');
-const text = document.getElementById('message');
+const form = document.getElementById('createProductForm');
+const userId = document.getElementById("userId").textContent;
 
 form.addEventListener('submit',async (event)=>{
   event.preventDefault();
   const data = new FormData(form);
   const obj = {};
   data.forEach((value,key)=>(obj[key] = value));
-  const response = await fetch('/api/sessions/register',{
+  const response = await fetch('/api/products',{
     method:'POST',
     body:JSON.stringify(obj),
     headers:{
-      "Content-Type":"application/json"
+        "Content-Type":"application/json"
     }
   })
   const responseData = await response.json();
   if(responseData.status==="success"){
-    window.location.replace('/login');
+    form.reset()
+    swal.fire("Producto creado")
   }else{
-    text.innerHTML = "Error al registrarse";
+    swal.fire("Error al crear el product")
   }
 })

@@ -28,16 +28,20 @@ const getProducts = async (req, res) => {
         const { docs, hasPrevPage, hasNextPage, prevPage, nextPage, ...rest } = await ProdModel.paginate({}, { page, limit: 10, lean: true })
         const products = docs;
         if(userData.role==="user"){
+            const cart = await cartManager.getCartsByUser(userData.id);
+            const cartId = cart[0]._id;
             const rolUser = true;
-            return res.render("products", { allProducts: products, page: rest.page, hasPrevPage, hasNextPage, prevPage, nextPage, user: userData, rolUser });
+            return res.render("products", { allProducts: products, page: rest.page, hasPrevPage, hasNextPage, prevPage, nextPage, user: userData, rolUser, cartId });
         }
         if(userData.role==="premium"){
+            const cart = await cartManager.getCartsByUser(userData.id);
+            const cartId = cart[0]._id;
             const rolPremium = true;
-            return res.render("products", { allProducts: products, page: rest.page, hasPrevPage, hasNextPage, prevPage, nextPage, user: userData, rolPremium });
+            return res.render("products", { allProducts: products, page: rest.page, hasPrevPage, hasNextPage, prevPage, nextPage, user: userData, rolPremium, cartId });
         }
         if(userData.role==="admin"){
             const rolAdmin = true;
-            return res.render("products", { allProducts: products, page: rest.page, hasPrevPage, hasNextPage, prevPage, nextPage, user: userData, rolAdmin });
+            return res.render("panelAdmin", { allProducts: products, page: rest.page, hasPrevPage, hasNextPage, prevPage, nextPage, user: userData, rolAdmin});
         }
         res.render("No tienes ningun rol asignado");
     } catch (error) {
@@ -93,15 +97,25 @@ const getCreateProduct = (req,res)=>{
     if(!req.session.user) return res.redirect('/login');
     const user = req.session.user;
     console.log(user)
-    if(user.role==="premium"||user.role==="admin"){
-        return res.render('createProduct', user );
+    if(user.role==="premium"){
+        const rolPremium = true;
+        return res.render('createProduct',{ user, rolPremium });
     }
-    res.render("No estas autorizado");
+    if(user.role==="admin"){
+        const rolAdmin = true;
+        return res.render('createProduct',{ user, rolAdmin });
+    }
+    res.render("noAuth");
 }
 
 const getUpdateProduct = (req,res)=>{
     if(!req.session.user) return res.redirect('/login');
-    res.render('updateProduct');
+    const user = req.session.user;
+    if(user.role==="admin"){
+        res.render('updateProduct');
+    }else{
+        res.render('noAuth')
+    }
 }
 
 const getDeleteProduct = async(req,res) =>{
@@ -111,12 +125,25 @@ const getDeleteProduct = async(req,res) =>{
         const { page = 1 } = req.query;
         const { docs, hasPrevPage, hasNextPage, prevPage, nextPage, ...rest } = await ProdModel.paginate({}, { page, limit: 10, lean: true })
         const products = docs;
-        console.log(products)
         if(userData.role==="premium"){//solo los productos que el creo
             const rolPremium = true;
+            const arrayProducts = await productManager.getProducts();
+            // console.log(arrayProducts)
+            const productsPremium = arrayProducts
+            // const productsPremium = [];
+            // for(i=0; i<arrayProducts.length; i++){
+            //     console.log(arrayProducts[i]);
+            // }
+            // const productsPremium = arrayProducts.forEach( prod => {
+            //     if(prod.owner === userData.email){
+            //         console.log(arrayProducts,"dentro del if")
+            //         return prod;
+            //     }
+            //     console.log(arrayProducts,"fuera del if")
+            // })
             return res.render("deleteproduct", { allProducts: products, page: rest.page, hasPrevPage, hasNextPage, prevPage, nextPage, user: userData, rolPremium });
         }
-        if(userData.role==="admin"){//todoslos productos
+        if(userData.role==="admin"){
             const rolAdmin = true;
             return res.render("deleteproduct", { allProducts: products, page: rest.page, hasPrevPage, hasNextPage, prevPage, nextPage, user: userData, rolAdmin });
         }

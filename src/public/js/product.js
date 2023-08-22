@@ -1,43 +1,41 @@
 const listProducts = document.getElementById("listProducts")
+const userMail = document.getElementById("userMail").textContent;
+const userId = document.getElementById("userId").textContent;
+const cartId = document.getElementById("cartId").textContent;
 
-// listProducts.addEventListener('click', e => {
-//     // addCarrito(e)
-//     addToCarritoItem(e)
-// })
-// const addCarrito = (e) => {
-//     if(e.target.classList.contains('agregarAlCarrito')){
-//         console.log(e.target.parentElement)
-//         // setCart(e.target.parentElement)
-//     }
-// }
+listProducts.addEventListener('click', (e) => {
+    addCarrito(e)
 
-// const setCart = obj =>{
-//     const product = {
-//         id:obj.querySelector(".agregarAlCarrito").id,
-//         title:obj.querySelector("h2").textContent,
-//         quantity:1
-//     }
-//     cart[product.id] = {...product}
-//     console.log(cart)
-// }
+})
+const addCarrito = async(e) => {
+    if(e.target.classList.contains('agregarAlCarrito')){
+        addToCart(e.target.parentElement)
+    }
+    e.stopPropagation();
+}
 
+const addToCart = async(obj) =>{
+    const productId = obj.querySelector(".agregarAlCarrito").id
+    const response = await fetch(`/api/products/${productId}`,{
+        method: "GET",
+        headers:{
+            "Content-Type":"application/json"
+        }
+    })
+    const responseData = await response.json();
 
-// const addToCarritoItem = (e) => {
-//     if(e.target.classList.contains('agregarAlCarrito')){
-//                 console.log(e.target.parentElement)
-//                 // setCart(e.target.parentElement)
-//     }
-//     const button = e.target.parentElement
-//     console.log(e.target.parentElement)
-//     console.log(item,"item")
-//     console.log(button,"boton")
-//     const item = button.closest(`.card`)
-//     const itemTitle = item.querySelector(`.card-title`).textContent
-//     const itemPrice = item.querySelector(`.precio`).textContent
-//     const newItem = {
-//         title:itemTitle,
-//         precio: itemPrice,
-//         cantidad: 1
-//     }
-//     console.log(newItem);
-// }
+    if(userMail===responseData.product.owner){
+        swal.fire("No puedes agregar productos al carrito creados por vos")
+    }else{
+        const obj = {quantity:1};
+        const response = await fetch(`/api/carts/${cartId}/product/${productId}`,{
+            method: "POST",
+            body:JSON.stringify(obj),
+            headers:{
+                "Content-Type":"application/json"
+            }
+        })
+        await response.json();
+        swal.fire("se agrego el producto al carrito")
+    }
+}

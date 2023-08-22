@@ -63,11 +63,9 @@ const initializePassport = ()=>{
                 try{
                     let newUserCart;
                     if (existsCart.length === 0) {
-                    existsCart = await cartManager.createCart({ uid: user._id, products: [] });
-                    let newCart = await userManager.createCart({ uid: user._id, cid: existsCart._id });
-                            
-                    newUserCart = newCart.cart[0];
-                }
+                        existsCart = await cartManager.createCart({ uid: user._id, products: [] });
+                        const userPrueba = await userManager.updateCartInUser( user._id, existsCart._id)
+                    }
                     return newUserCart;
                 }catch(err){
                     console.log(err)

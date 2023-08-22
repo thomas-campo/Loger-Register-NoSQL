@@ -1,8 +1,8 @@
 <div>
-    <h1>Borrar tus productos</h1>
-    <p>Usuario: {{this.name}}</p>
-    <p>Correo: {{this.email}} </p>
-    <p>Rol: {{this.role}}</p>
+    <h1>Usuario: {{user.name}}</h1>
+    <p>Usario Id:</p><p id="userId">{{user.id}}</p>
+    <p>Email:</p><p id="userMail">{{user.email}}</p>
+    <p>Rol: {{user.role}}</p>
     <a href="/api/sessions/logout"><button>cerrar sesion</button></a>
     <a href="/products"><button>Volver</button></a>       
 </div>
@@ -43,5 +43,9 @@
     </form>
     <p id="message"></p>
 </div>
-
+{{#if rolPremium}}
 <script src="/js/createProduct.js"></script>
+{{/if}}
+{{#if rolAdmin}}
+<script src="/js/createProductAdmin.js"></script>
+{{/if}}

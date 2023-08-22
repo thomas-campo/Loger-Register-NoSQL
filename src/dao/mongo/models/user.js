@@ -11,7 +11,7 @@ const schema = new mongoose.Schema({
         {
             type:mongoose.SchemaTypes.ObjectId,
             ref:'carts'
-        },
+        }
     ],
     role:{
         type:String,

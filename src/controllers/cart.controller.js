@@ -16,8 +16,8 @@ const getCart = async(req, res) => {//buscar el carrito por id
      if(!mycart) return res.status(404).send("carrito no encontrado");
      return res.send(mycart)
     }catch(err){
-         console.log(err)
-         res.status(500).send({error:"Error interno del servidor"});
+        console.log(err)
+        res.status(500).send({error:"Error interno del servidor"});
     }
 }
 

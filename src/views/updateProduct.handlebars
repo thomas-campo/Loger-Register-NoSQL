@@ -1,5 +1,9 @@
 <div>
-    <h1>Modifica un producto</h1>
+    <h1>Modificar producto</h1>
+
+    <a href="/products"><button>Volver</button></a>
+    <br>
+    <br>
 
     <form id="updateProductForm">
         <label>Titulo</label>
@@ -11,7 +15,7 @@
         <br>
 
         <label>Precio</label>
-        <input name="price">
+        <input type="number" name="price">
         <br>
 
         <label>Categoria</label>
@@ -23,22 +27,22 @@
         <br>
 
         <label>Code</label>
-        <input name="code">
+        <input type="number" name="code">
         <br>
 
         <label>Stock</label>
-        <input name="stock">
+        <input type="number" name="stock">
         <br>
 
-        <label>Status</label>
-        <input name="status">
+        <label>Status:</label>
+        <label>true</label>
+        <input type="radio" name="status" value="true">
+        <label>false</label>
+        <input type="radio" name="status" value="false">
         <br>
 
         <input type="submit">
         <br>
     </form>
-    <p id="message"></p>
-    <a href="/products"><button>Volver</button></a>
 </div>
-
 <script src="/js/updateProduct.js"></script>

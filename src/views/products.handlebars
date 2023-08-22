@@ -1,143 +1,136 @@
-{{#if rolAdmin}}
-    <div>
-        <div>
-    <div class="row card shadow m-5">
-      <div>
-        <h1>{{user.name}} </h1>
-        <p>Correo: {{user.email}} </p>
-        <p>Rol: {{user.role}}</p>
-        <a href="/api/sessions/logout"><button>cerrar sesion</button></a>
-        </div>
-    </div>
-    <div>
-    <h2>Lista de Productos</h2>
-    <br>
-    <a href="http://localhost:8000/createProduct"><button>Crear un nuevo producto</button></a>
-    <br>
-    
-
-    {{#each allProducts}}
-        <div class="{{userId}}">
-            
-            <h2>{{this.title}}</h2>
-            <p>description : {{this.description}}</p>
-            <p>price : <p class="price">{{this.price}}</p></p>
-            <p>thumbnail : {{this.thumbnail}}</p>
-            <p>code : {{this.code}}</p>
-            <p>stock : {{this.stock}}</p>
-            <p>id: {{this.id}}</p>
-
-            <a href="http://localhost:8000/api/products/deleteProduct/{{this.id}}"><button>Borrar producto</button></a>
-            <br>
-            <a href="http://localhost:8000/updateProduct"><button>Modificar Producto</button></a>
-
-        </div>
-    {{/each}}
-    </div>
-    <br>
-    {{#if hasPrevPage}}
-      <a href="/products?page={{prevPage}}"><button>Anterior</button></a>
-
-    {{/if}}
-
-    {{page}}
-
-    {{#if hasNextPage}}
-      <a href="/products?page={{nextPage}}"><button>Siguiente</button></a>
-
-    {{/if}}
-
-</div>
-    </div>
-{{/if}}
 {{#if rolPremium}}
     <div>
-        <div>
-    <div class="row card shadow m-5">
-      <div>
-        <h1>{{user.name}} </h1>
-        <p>Correo: {{user.email}} </p>
+      <div class="row card shadow m-5">
+
+        <h1>{{user.name}}</h1>
+        <p>User Id:</p><p id="userId">{{user.id}}</p> 
+        <p>Email:</p><p id="userMail">{{user.email}}</p>
         <p>Rol: {{user.role}}</p>
+        <p>Carrrito Id:</p><p id="cartId" >{{cartId}}</p>
         <a href="/api/sessions/logout"><button>cerrar sesion</button></a>
-        <a href="http://localhost:8000/cart/64ba3998f809c2d083af4673"><button>ir al carrito(Ejemplo id:64751796ba779febe906b108)</button></a>
-        </div>
-    </div>
-    <div>
-    <h2>Lista de Productos</h2>
+        <a href="/cart/{{cartId}}"><button>ir al carrito</button></a>
+        {{!-- <a href="/api/users/premium/{{user.id}}"><button>cambiar de rol</button></a> --}}
 
-    <a href="http://localhost:8000/createProduct"><button>Crear un nuevo producto</button></a>
-    <br>
-    <a href="http://localhost:8000/deleteProduct"><button>Borrar tus productos</button></a>
-    <br>
+      </div>
+      <div id="listProducts">
+      
+        <h2>Lista de Productos</h2>
 
-    {{#each allProducts}}
-        <div class="{{userId}}">
-            
+
+        <a href="/createProduct"><button>Crear un nuevo producto</button></a>
+        <br>
+        <a href="/deleteProduct"><button>Borrar tus productos</button></a>
+        <br>
+      <br>
+
+        {{#if hasPrevPage}}
+
+          <a href="/products?page={{prevPage}}"><button>Anterior</button></a>
+
+        {{/if}}
+
+        {{page}}
+
+        {{#if hasNextPage}}
+
+          <a href="/products?page={{nextPage}}"><button>Siguiente</button></a>
+
+        {{/if}}
+
+        {{#each allProducts}}
+          
+          <div class="cards">
+              
             <h2>{{this.title}}</h2>
             <p>description : {{this.description}}</p>
             <p>price : <p class="price">{{this.price}}</p></p>
             <p>thumbnail : {{this.thumbnail}}</p>
             <p>code : {{this.code}}</p>
             <p>stock : {{this.stock}}</p>
+            <p>owner: {{this.owner}}</p>
             <p>id: {{this.id}}</p>
 
             <button class="agregarAlCarrito" id={{this.id}}>agregar al carrito</button>
             <br>
 
-        </div>
-    {{/each}}
-    </div>
-    <br>
-    {{#if hasPrevPage}}
-      <a href="/products?page={{prevPage}}"><button>Anterior</button></a>
+          </div>
 
-    {{/if}}
+        {{/each}}
 
-    {{page}}
+      </div>
+      <br>
 
-    {{#if hasNextPage}}
-      <a href="/products?page={{nextPage}}"><button>Siguiente</button></a>
+      {{#if hasPrevPage}}
 
-    {{/if}}
+        <a href="/products?page={{prevPage}}"><button>Anterior</button></a>
 
-</div>
+      {{/if}}
+
+      {{page}}
+
+      {{#if hasNextPage}}
+
+        <a href="/products?page={{nextPage}}"><button>Siguiente</button></a>
+
+      {{/if}}
+
     </div>
 {{/if}}
 {{#if rolUser}}
-<div>
+  <div>
     <div class="row card shadow m-5">
-      <div>
-        <h1>{{user.name}} </h1>
-        <p>Correo: {{user.email}} </p>
-        <p>Rol: {{user.role}}</p>
-        <a href="/api/sessions/logout"><button>cerrar sesion</button></a>
-        <a href="http://localhost:8000/cart/64ba3998f809c2d083af4673"><button>ir al carrito(Ejemplo id:64751796ba779febe906b108)</button></a>
+
+      <h1>{{user.name}}</h1>
+      <p>Rol: {{user.role}}</p>
+      <p>User Id:</p><p id="userId">{{user.id}}</p>
+      <p>Email:</p><p id="userMail">{{user.email}}</p>
+      <p>Carrrito Id:</p><p id="cartId" >{{cartId}}</p>
+      <a href="/api/sessions/logout"><button>cerrar sesion</button></a>
+      <a href="/cart/{{cartId}}"><button>ir al carrito:{{cartId}}</button></a>
+      {{!-- <a href="/api/users/premium/{{user.id}}"><button>cambiar de rol</button></a> --}}
+
     </div>
-</div>
-<div>
-</div>
-<div>
-    <h2>Lista de Productos</h2>
+    <div id="listProducts">
+      <h2>Lista de Productos</h2>
 
-    {{#each allProducts}}
-        <div class="{{userId}}">
-            
-            <h2>{{this.title}}</h2>
-            <p>description : {{this.description}}</p>
-            <p>price : <p class="price">{{this.price}}</p></p>
-            <p>thumbnail : {{this.thumbnail}}</p>
-            <p>code : {{this.code}}</p>
-            <p>stock : {{this.stock}}</p>
-            <p>id: {{this.id}}</p>
+      {{#if hasPrevPage}}
 
-            <button class="agregarAlCarrito" id={{this.id}}>agregar al carrito</button>
-            <br>
+        <a href="/products?page={{prevPage}}"><button>Anterior</button></a>
 
-        </div>
-    {{/each}}
+      {{/if}}
+
+      {{page}}
+
+      {{#if hasNextPage}}
+
+        <a href="/products?page={{nextPage}}"><button>Siguiente</button></a>
+
+      {{/if}}
+
+      {{#each allProducts}}
+
+          <div class="cards">
+              
+              <h2>{{this.title}}</h2>
+              <p>description : {{this.description}}</p>
+              <p>price : <p class="price">{{this.price}}</p></p>
+              <p>thumbnail : {{this.thumbnail}}</p>
+              <p>code : {{this.code}}</p>
+              <p>stock : {{this.stock}}</p>
+              <p>id: {{this.id}}</p>
+
+              <button class="agregarAlCarrito" id={{this.id}}>agregar al carrito</button>
+              <br>
+
+          </div>
+
+      {{/each}}
+
     </div>
     <br>
+
     {{#if hasPrevPage}}
+
       <a href="/products?page={{prevPage}}"><button>Anterior</button></a>
 
     {{/if}}
@@ -145,11 +138,12 @@
     {{page}}
 
     {{#if hasNextPage}}
+
       <a href="/products?page={{nextPage}}"><button>Siguiente</button></a>
 
     {{/if}}
 
-</div>
+  </div>
 {{/if}}
 <script src="/socket.io/socket.io.js"></script>
 <script src="/js/product.js"></script>

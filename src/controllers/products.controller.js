@@ -99,9 +99,10 @@ const updateProductById = async(req,res)=>{
     try{
       const {pid} = req.params;
       const updateProduct = req.body;
+      
       await productManager.updateProduct(pid,updateProduct);
-      res.status(200).send({message:"Se modifico con exito"});
-    }catch{
+      res.status(200).send({status:"success",message:"Se modifico con exito"});
+    }catch(error){
       res.status(500).send({error:"Error interno del servidor"})
     }
 }

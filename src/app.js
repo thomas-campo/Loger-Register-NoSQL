@@ -6,6 +6,8 @@ import MongoStore from "connect-mongo";
 import mongoose from "mongoose";
 import passport from "passport";
 import config from './config/config.js';
+import swaggerJsdoc from "swagger-jsdoc";
+import swaggerUiExpress from "swagger-ui-express";
 
 import ProductManager from "./dao/mongo/manager/ProductManagerMongo.js";
 
@@ -27,6 +29,20 @@ const PORT = config.app.PORT
 const server = app.listen(PORT,()=>console.log(`escuchando en el puerto ${PORT}`));
 const io = new Server(server);
 const connection =  mongoose.connect(config.mongo.URL);
+
+const swaggerOptions = {
+    definition: {
+        openapi:'3.0.1',
+        info:{
+            title:"Proyecto final",
+            description:"Documentacion para el Proyecto final"
+        }
+    },
+    apis: [`${__dirname}/docs/**/*.yaml`]
+}
+
+const specs = swaggerJsdoc(swaggerOptions);
+app.use('/docs',swaggerUiExpress.serve,swaggerUiExpress.setup(specs))
 
 const productManager = new ProductManager();
 

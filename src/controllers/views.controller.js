@@ -10,7 +10,6 @@ const cartManager = new CartManager();
 
 const getHome =  async (req,res)=>{
     try{
-        console.log(req.session.user,"usuario, getproducts viewscontroller");
         const { page = 1 } = req.query;
         const { docs, hasPrevPage, hasNextPage, prevPage, nextPage, ...rest } = await ProdModel.paginate({}, { page, limit: 10, lean: true })
         const products = docs;

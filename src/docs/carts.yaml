@@ -1,0 +1,101 @@
+paths:
+  /api/carts/{cid}:
+    get:
+      summary: Muestra el carrito del id proporcionado
+      tags:
+        - Carts
+      parameters:
+      - name: cid
+        in: path
+        required: true
+        description: id para obtener al carrito
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Se obtubo el carrito correcamente
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#components/schemas/Cart"
+        "500":
+          description: Error interno, en este endpoint se debera  a un error en la base de datos,revisar conexion o parametros de busqueda
+    delete:
+      summary: Elimina todos los productos del carrito del id proporcionado
+      tags:
+        - Carts
+      parameters:
+      - name: cid
+        in: path
+        required: true
+        description: id para obtener al carrito
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Carrito eliminado con exito
+        "404":
+          description: No se encontro el carrito
+        "500":
+          description: Error interno
+  /api/carts/{cid}/product/{pid}:
+    post:
+      summary: Agrega un producto del id proporcionado al carrito del id proporcionado
+      tags:
+        - Carts
+      parameters:
+      - name: cid
+        in: path
+        required: true
+        description: id para obtener al carrito
+        schema:
+          type: string
+      - name: pid
+        in: path
+        required: true
+        description: id para obtener al producto
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Producto agregado con exito
+        "500":
+          description:  Error interno
+    delete:
+      summary: Elimina el producto del id proporcionado en el carrito del id proporcionado
+      tags:
+        - Carts
+      parameters:
+      - name: cid
+        in: path
+        required: true
+        description: id para obtener al carrito
+        schema:
+          type: string
+      - name: pid
+        in: path
+        required: true
+        description: id para obtener al producto
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Carrito eliminado con exito
+        "404":
+          description: No se encontro el carrito
+        "500":
+          description: Error interno
+
+components:
+  schemas:
+    Cart:
+      type: array
+      properties:
+        user:
+          type: string
+          description: id del producto
+        products:
+          type: array
+          description: array de productos

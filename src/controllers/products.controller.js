@@ -2,13 +2,12 @@ import ProductManagerMongo from '../dao/mongo/manager/ProductManagerMongo.js';
 const productManager = new ProductManagerMongo();
 
 const getProducts = async (req, res) => {
-    try{
-      let { limit, page, sort, category } = req.query
-      // console.log(req.originalUrl);
-  
+  try{
+    let { limit, page, sort, category } = req.query
+      
       const options = {
-          page: Number(page) || 1,
-          limit: Number(limit) || 10,
+        page: Number(page) || 1,
+        limit: Number(limit) || 10,
           sort: { price: Number(sort) }
       };
   
@@ -18,7 +17,7 @@ const getProducts = async (req, res) => {
   
   
       const links = (products) => {
-          let prevLink;
+        let prevLink;
           let nextLink;
           if (req.originalUrl.includes('page')) {
               prevLink = products.hasPrevPage ? req.originalUrl.replace(`page=${products.page}`, `page=${products.prevPage}`) : null;
@@ -34,8 +33,10 @@ const getProducts = async (req, res) => {
           nextLink = products.hasNextPage ? req.originalUrl.concat(`&page=${products.nextPage}`) : null;
           return { prevLink, nextLink };
   
-      }
-  
+        }
+        
+        
+    
       const categories = await productManager.categories()
   
       const result = categories.some(categ => categ === category)
@@ -52,8 +53,7 @@ const getProducts = async (req, res) => {
       const { prevLink, nextLink } = links(products);
       return res.status(200).send({ status: 'success', payload: docs, totalPages, prevPage, page, nextPage, hasNextPage, hasPrevPage, prevLink, nextLink });
     }catch(error){
-      console.log("error en el routerGet de productos");
-      res.send({error:"error en el servidor al obtener los productos(router.get(products))"});
+      res.status(500).send({error:"error en el servidor al obtener los productos(router.get(products))"});
     }
 }
 

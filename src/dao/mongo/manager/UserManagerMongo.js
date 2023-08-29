@@ -8,11 +8,11 @@ export default class UserManager{
     createCart = async (cart) => {
         try {
             const { uid, cid } = cart;
-            const user = await this.getUserById(uid);
-            const userUpdate = await this.updateUser(uid,{ cart: user })
-            user.cart.push(cid);
-            await user.save();
-            return user;
+            // const user = await this.getUserById(uid);
+            const userUpdate = await this.updateUser(uid,{ cart: cid })
+            // user.cart.push(cid);
+            // await user.save();
+            return userUpdate;
         } catch (error) {
             return error
         }
@@ -43,6 +43,6 @@ export default class UserManager{
     }
 
     updateUser = (id, user) => {
-        return userModel.findByIdAndUpdate(id, { $set: user }).lean();
+        return userModel.findByIdAndUpdate(id, { $set: cart }).lean();
     }
 }

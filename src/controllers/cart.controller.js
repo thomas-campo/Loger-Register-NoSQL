@@ -11,7 +11,6 @@ const userManager = new UserManager();
 const getCart = async(req, res) => {//buscar el carrito por id
     try{//listo
      const cid  = req.params.cid;
-     console.log(req.user,"user del cartcontroller getcart")
      const mycart = await cartManager.getCartById(cid);
      if(!mycart) return res.status(404).send("carrito no encontrado");
      return res.send(mycart)
@@ -23,8 +22,26 @@ const getCart = async(req, res) => {//buscar el carrito por id
 
 const createCart = async(req, res) => {//crear carrito
     try{//listo
-        const createdCart = await cartManager.createCart(cart);
-        res.status(200).send(createdCart);
+        const { uid } = req.body
+
+        let existsCart = await cartManager.getCartsByUser(uid)
+
+        async function handleCart() {
+            try{
+                let newUserCart;
+                if (existsCart.length === 0) {
+                    existsCart = await cartManager.createCart({ uid, products: [] });
+                    await userManager.updateCartInUser( uid, existsCart._id)
+                }
+                return newUserCart;
+            }catch(err){
+                console.log(err)
+            }
+        }
+                
+        let cart = existsCart[0] ? existsCart[0]._id : await handleCart();
+
+        res.status(200).send(cart);
     }catch(err){
         console.log(err)
         res.status(500).send({error:"Error interno del servidor"});

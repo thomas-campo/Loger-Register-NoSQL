@@ -148,7 +148,7 @@ const getDeleteProduct = async(req,res) =>{
             const rolAdmin = true;
             return res.render("deleteproduct", { allProducts: products, page, hasPrevPage, hasNextPage, prevPage, nextPage, user: userData, rolAdmin });
         }
-        res.render("No estas autorizado");
+        res.render("noAuth");
     } catch (error) {
         console.log(error);
         res.send({status:505,error:"Error viewDeleteProduct"})

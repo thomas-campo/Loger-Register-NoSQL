@@ -1,6 +1,6 @@
 const listProducts = document.getElementById("listProducts");
-const userId = document.getElementById("userId").textContent;
-const userMail = document.getElementById("userMail").textContent;
+const userId = document.querySelector(".uid").id;
+const userMail = document.querySelector(".email").id;
 const card = document.getElementsByClassName("card");
 
 listProducts.addEventListener('click', (e) => {
@@ -8,16 +8,14 @@ listProducts.addEventListener('click', (e) => {
 })
 const buttonDelete = async(e) => {
     if(e.target.classList.contains('buttonDeleteProduct')){
-        // console.log(e.target.parentElement)
         deleteProduct(e.target.parentElement)
     }
     e.stopPropagation();
 }
 
 const deleteProduct = async(obj) =>{
-    // console.log(obj,"producto")
     const productId = obj.querySelector(".buttonDeleteProduct").id
-    // console.log(productId,"productId");//correcto
+
     const response = await fetch(`/api/products/${productId}`,{
         method: "GET",
         headers:{
@@ -25,8 +23,6 @@ const deleteProduct = async(obj) =>{
         }
     })
     const responseData = await response.json();
-    // console.log(responseData,"reponseData")
-    console.log(responseData.product.owner,"responseData.product.owner")
 
     if(userMail!==responseData.product.owner){
         swal.fire("No podes eliminar productos que no creaste vos")
@@ -39,6 +35,6 @@ const deleteProduct = async(obj) =>{
           })
         await response.json();
         swal.fire("Se elimino el producto")
-        window.location.replace('/products');
+        setTimeout(()=>window.location.replace('/products'),2000);
     }
 }

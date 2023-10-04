@@ -1,10 +1,11 @@
 <div>
   <div class="row card shadow m-5">
     <h1>Borrar productos</h1>
-    <p>Usuario: {{user.name}}</p>
-    <p>Usario Id:</p><p id="userId">{{user.id}}</p>
-    <p>Email:</p><p id="userMail">{{user.email}}</p>
+    <p>{{user.name}}</p>
+    <p class="uid" id="{{user.id}}">User Id: {{user.id}}</p> 
+    <p class="email" id="{{user.email}}">Email: {{user.email}}</p>
     <p>Rol: {{user.role}}</p>
+    <p class="cid" id="{{cartId}}">Carrito: {{cartId}}</p>
     <a href="/api/sessions/logout"><button>cerrar sesion</button></a>
     <a href="http://localhost:8000/products"><button>Volver</button></a>
   </div>
@@ -29,7 +30,7 @@
             
         <h2>{{this.title}}</h2>
         <p>description : {{this.description}}</p>
-        <p>price : <p class="price">{{this.price}}</p></p>
+        <p>price : {{this.price}}</p>
         <p>thumbnail : {{this.thumbnail}}</p>
         <p>code : {{this.code}}</p>
         <p>stock : {{this.stock}}</p>
@@ -38,13 +39,15 @@
 
         <button class="buttonDeleteProduct" id={{this.id}}>Borrar producto</button>
         <br>
-
+      
+      </div>
+    {{/each}}
+    {{/if}}
   </div>
-  {{/each}}
-  {{else}}
+  {{#else}}
     <h2>No tienes productos creados</h2>
-  {{/if}}
-  <br>
+  {{/else}}
+    <br>
   {{#if hasPrevPage}}
 
     <a href="/deleteProduct?page={{prevPage}}"><button>Anterior</button></a>

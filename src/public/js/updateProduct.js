@@ -19,7 +19,10 @@ form.addEventListener('submit',async (event)=>{
   if(responseData.status==="success"){
     form.reset()
     swal.fire("Producto modificado con exito");
+    window.addEventListener("click", ()=>{
+      window.location.replace(`/products`);
+  })
   }else{
-    swal.fire("Error al modificar el producto");
+    swal.fire("Error al actualizar el producto, modifique el formuario");
   }
 })

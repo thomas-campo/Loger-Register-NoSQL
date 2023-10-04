@@ -1,29 +1,40 @@
 import passport from "passport";
 import local from "passport-local";
 import GithubStrategy from "passport-github2";
-import userModel from "../dao/mongo/models/user.js";
+
 import { createHash, validatePassword } from "../utils.js";
 import config from "./config.js"
-import dtoUser from "../dto/user.js";
+import DtoUser from "../dto/user.js";
 
-import CartManager from "../dao/mongo/manager/CartManagerMongo.js";
-import UserManager from "../dao/mongo/manager/UserManagerMongo.js";
-
-const userManager = new UserManager();
-const cartManager = new CartManager();
-
-//agregar el id del carrito al usuario model ,despues de crear el carrito con el id del usuario
-
+import { CartService, UserService } from "../services/service.js";
+import DtoUserFront from "../dto/userFront.js";
+import DtoUserGithubFront from "../dto/userGithubFront.js";
 const localStrategy = local.Strategy;
 
 const initializePassport = ()=>{
     passport.use('register',new localStrategy({passReqToCallback:true, usernameField:'email'},async(req,email,password,done)=>{
         try{
             const {first_name,last_name} = req.body;
-            const exist = await userModel.findOne({email});
+
+            const expresiones = {
+                nombre: /^[a-zA-ZÀ-ÿ\s]{1,40}$/,
+                password: /^[a-zA-Z0-9]{3,12}$/,
+                email: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/
+            }
+
+            console.log(expresiones.nombre.test(first_name),"firstname")
+            console.log(expresiones.nombre.test(last_name),"lastname")
+            console.log(expresiones.email.test(email),"email")
+            console.log(expresiones.password.test(password),"password")
+        
+            if(!expresiones.nombre.test(first_name)||!expresiones.nombre.test(last_name)||!expresiones.email.test(email)||!expresiones.password.test(password)) return done(null, false, { message: 'valores incorrectos' });
+
+            const exist = await UserService.getUserByEmail(email);
+
             if(exist) return done(null,false,{message:'Este usuario ya existe'});
+
             const hashedPassword = await createHash(password);//encriptamos la contraseña
-            const user = new dtoUser(
+            const user = new DtoUser(
                 {
                     first_name,
                     last_name,
@@ -31,7 +42,8 @@ const initializePassport = ()=>{
                     password:hashedPassword
                 }
             )   
-            const result = await userModel.create(user);
+            const result = await UserService.createUser(user);
+
             done(null,result)
         }catch(error){
             done(error);
@@ -41,46 +53,49 @@ const initializePassport = ()=>{
     passport.use('login',new localStrategy({ usernameField: 'email' },async (email, password, done) => {
         try{
             if (email === config.admin.EMAIL && password === config.admin.PASSWORD) {
-                const user ={
+                const user = {
                         id: 0,
                         name: `Admin`,
                         role: 'admin',
-                        email: '...',
-                    };
+                        email: '...'
+                    }
                 return done(null, user);
             }
             let user;
       
-            user = await userModel.findOne({ email });
+            user = await UserService.getUserByEmail(email);
             if (!user) return done(null, false, { message: 'Email incorrecto' });
-      
+
             const isValidPassword = await validatePassword(password, user.password);
             if (!isValidPassword) return done(null, false, { message: 'Contraseña incorrecta' });
 
-            let existsCart = await cartManager.getCartsByUser(user._id)
+            let existsCart = await CartService.getCartsByUser(user._id);
 
             async function handleCart() {
                 try{
                     let newUserCart;
                     if (existsCart.length === 0) {
-                        existsCart = await cartManager.createCart({ uid: user._id, products: [] });
-                        await userManager.updateCartInUser( user._id, existsCart._id)
+                        existsCart = await CartService.createCart({ uid: user._id, products: [] });
+                        await UserService.updateCartInUser( user._id, existsCart._id);
                     }
                     return newUserCart;
                 }catch(err){
-                    console.log(err)
+                    console.log(err);
                 }
             }
                     
             let cart = existsCart[0] ? existsCart[0]._id : await handleCart();
-
-            user = {
-                id: user._id,
-                name: `${user.first_name} ${user.last_name}`,
-                email: user.email,
-                role: user.role,
-                cart
-            };
+            
+            user = new DtoUserFront(
+                {
+                    id: user._id,
+                    first_name:user.first_name,
+                    last_name:user.last_name,
+                    email: user.email,
+                    role: user.role,
+                    cart
+                }
+            );
             return done(null, user);
         }catch(error){
             done(error);
@@ -88,35 +103,52 @@ const initializePassport = ()=>{
     }));
 
     passport.use('github', new GithubStrategy({
-        clientID:"Iv1.25b7b0f06a7dce08",
-        clientSecret:"22560c970a930e20cc7415b2c7a24c6d7f081c2f",
-        callbackURL:"http://localhost:8080/api/sessions/githubcallback"
+
+        clientID:config.github.ID,
+        clientSecret:config.github.SECRET,
+        callbackURL:config.github.URL
+
     },async(accessToken,refreshToken,profile,done)=>{
         try{
-            console.log(profile);
             const {name,email} = profile._json;
-            const user = await userModel.findOne({email});
-            console.log(user);
+
+            let user = await UserService.getUserByEmail(email);
             if(!user){
                 const newUser = {
                     first_name: name,
                     email,
+                    role:"user",
                     password:''
                 }
-                const result = await userModel.create(newUser);
-                let existsCart = await cartManager.getCartsByUser(result._id)
+                const result = await UserService.createUser(newUser);
 
-                if (existsCart.length === 0) {
-                    let newCart = await cartManager.createCart({ uid: result._id, products: [] })
-                    const addCartUser = await userManager.createCart({ uid: result._id, cid: newCart._id })
+                let cart = await CartService.createCart({ uid: result._id, products: [] })
 
-                    return done(null, addCartUser);
-                }
-                done(null,result);
+                const addCartUser = await UserService.updateCartInUser( result._id.toString() , cart._id.toString() )
+
+                user = new DtoUserGithubFront(
+                    {
+                        name: addCartUser.first_name,
+                        id: addCartUser._id,
+                        email: addCartUser.email,
+                        role: addCartUser.role,
+                        cart: []
+                    }
+                );
+                return done(null,user);
             }
-            done(null,user);
+            user = new DtoUserGithubFront(
+                {
+                    name: name,
+                    id: user._id,
+                    email: user.email,
+                    role: user.role,
+                    cart: []
+                }
+            );
+            return done(null,user);
         }catch(error){
-            done(error)
+            return done(error)
         }
     }))
 
@@ -125,7 +157,7 @@ const initializePassport = ()=>{
         return done(null,user.id);
     });
     passport.deserializeUser(async function(id,done){
-        const user = await userModel.findOne({_id: id });
+        const user = await UserService.getUserBy({_id: id});
         return done(null,user);
     });
 }

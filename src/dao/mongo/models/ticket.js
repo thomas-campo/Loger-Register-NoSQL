@@ -9,6 +9,7 @@ const schema = new mongoose.Schema({
         ref: 'carts'
     },
     amount:Number,
+    price:Number,
     purchaser:String
 
 }, { timestamps: { createdAt: 'purchase_time', updatedAt: 'updated_at' } }

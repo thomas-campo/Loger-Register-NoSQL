@@ -1,5 +1,4 @@
-import ProductManagerMongo from '../dao/mongo/manager/ProductManagerMongo.js';
-const productManager = new ProductManagerMongo();
+import { ProductService } from "../services/service.js";
 
 const getProducts = async (req, res) => {
   try{
@@ -37,18 +36,18 @@ const getProducts = async (req, res) => {
         
         
     
-      const categories = await productManager.categories()
+      const categories = await ProductService.categories()
   
       const result = categories.some(categ => categ === category)
       if (result) {
-        const products = await productManager.getProductArray({ category }, options);
+        const products = await ProductService.getProductArray({ category }, options);
         const { prevLink, nextLink } = links(products);
         const { totalPages, prevPage, page, nextPage, hasNextPage, hasPrevPage, docs } = products
         return res.status(200).send({ status: 'success', payload: docs, totalPages, prevPage, page, nextPage, hasNextPage, hasPrevPage, prevLink, nextLink });
       }
   
-      const products = await productManager.getProductArray({}, options);
-      console.log(products, 'Product');
+      const products = await ProductService.getProductArray({}, options);
+
       const { totalPages, prevPage, nextPage, hasNextPage, hasPrevPage, docs } = products
       const { prevLink, nextLink } = links(products);
       return res.status(200).send({ status: 'success', payload: docs, totalPages, prevPage, page, nextPage, hasNextPage, hasPrevPage, prevLink, nextLink });
@@ -60,9 +59,24 @@ const getProducts = async (req, res) => {
 const createProduct = async (req, res) => {
     try{
       const { title, description, price, category, thumbnail, code, stock, owner } = req.body;
-      const products = await productManager.getProducts();
+
+      const expresiones = {
+        title:/^[a-zA-Z ]{2,30}$/,
+        category:/^[a-zA-Z ]{2,30}$/,
+        stock:/^[0-9]{1,4}$/,
+        code:/^[0-9]{3,15}$/,
+        price:/^[0-9]{3,8}$/
+      }
+
+      if(!expresiones.title.test(title)||!expresiones.stock.test(stock)||!expresiones.price.test(price)||!expresiones.code.test(code)||!expresiones.category.test(category)){
+        return res.send({status:"error",error:"Valores incorrectos"})
+      }
+      
+      const products = await ProductService.getProducts();
       const productExist = req.body;
-      if(!title||!description||!price||!category||!thumbnail||!code) return res.status(400).send({status:"error",error:"Valores incompletos",title,description,price,category,thumbnail,code})
+
+      if(!title||!description||!price||!category||!thumbnail||!code) return res.status(400).send({status:"error",error:"Valores incompletos",message:"Valores incompletos"})
+      
       const exist = products.find( p => p.code === productExist.code)
       if(exist){
         return res.send({status:"error",error:"producto ya existente"});
@@ -77,7 +91,7 @@ const createProduct = async (req, res) => {
         stock,
         owner
       }
-      const result = await productManager.createProduct(product);
+      const result = await ProductService.createProduct(product);
       res.status(201).send({status:"success",payload:result});  
     }catch(error){
       res.status(500).send({error:"Error interno del servidor en create product"})
@@ -87,8 +101,8 @@ const createProduct = async (req, res) => {
 const getProductById = async (req, res) => {
     try{
       const { pid } = req.params;
-      const product = await productManager.getProductBy({ _id: pid });
-      if (!product) return res.status(404).send({ status: 'error', error: 'Company not found' });
+      const product = await ProductService.getProductBy({ _id: pid });
+      if (!product) return res.status(404).send({ status: 'error', error: 'producto no encontrado' });
       res.send({ product });
     }catch{
       res.status(500).send({error:"error interno del servidor"})
@@ -99,9 +113,22 @@ const updateProductById = async(req,res)=>{
     try{
       const {pid} = req.params;
       const updateProduct = req.body;
+      const { title, price, category, code, stock } = req.body;
       
-      await productManager.updateProduct(pid,updateProduct);
-      res.status(200).send({status:"success",message:"Se modifico con exito"});
+      const expresiones = {
+        title:/^[a-zA-Z ]{2,30}$/,
+        category:/^[a-zA-Z ]{2,30}$/,
+        stock:/^[0-9]{1,4}$/,
+        code:/^[0-9]{3,15}$/,
+        price:/^[0-9]{3,8}$/
+      }
+
+      if(!expresiones.title.test(title)||!expresiones.stock.test(stock)||!expresiones.price.test(price)||!expresiones.code.test(code)||!expresiones.category.test(category)){
+        return res.send({status:"error",error:"Valores incorrectos"})
+      }
+
+      await ProductService.updateProduct(pid,updateProduct);
+      res.status(200).send({status:"success",message:"el producto se actualizo con exito"});
     }catch(error){
       res.status(500).send({error:"Error interno del servidor"})
     }
@@ -110,9 +137,8 @@ const updateProductById = async(req,res)=>{
 const deleteProductById = async(req,res)=>{
     try{
       const {pid} = req.params;
-      await productManager.deleteProduct(pid);
-      const arrayProducts = await productManager.getProducts();
-      // req.io.emit('products',arrayProducts);
+      await ProductService.deleteProduct(pid);
+      const arrayProducts = await ProductService.getProducts();
       res.send({status:'success', payload:arrayProducts});
     }catch(error){
       res.status(500).send({error:"error interno del servidor"})

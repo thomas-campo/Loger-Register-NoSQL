@@ -1,28 +1,48 @@
-<div>
-    <h1>Cart</h1>
+<div id="divCart">
+
+    <h1>Carrito</h1>
     {{#if data}}
-        <p>Id del carrito: {{data._id}}</p>
-        <a href="http://localhost:8000/products"><button>ver productos</button></a>
-        {{#each data.products }}
+        <p class="cid" id="{{data._id}}">Id del carrito: {{data._id}}</p>
+        <a href="/products"><button>Ver Productos</button></a>
+        {{#if data.products}}
+        <button class="finalizarCompra">Finalizar compra</button>
+        <br>
+        <div id="listProducts">
 
-            <div>
+            <h2>Productos:</h2>
+            {{#each data.products }}
+
                 <div>
-                    <h3>{{this._id.title}}</h3>
-                    <p>Description: {{this._id.description}}</p>
-                    <p>Category: {{this._id.category}}</p>
-                    <p>Quantity: {{this.quantity}}</p>
-                    <p>Precio: {{this._id.price}}</p>
-                    <p>precio Toltal:</p>
+                    
+                    <div>
+                        <h3>{{this._id.title}}</h3>
+                        <p>Description: {{this._id.description}}</p>
+                        <p>Category: {{this._id.category}}</p>
+                        <p>Quantity: {{this.quantity}}</p>
+                        <p>Precio: {{this._id.price}}</p>
+                        <p>precio Total:</p>
+                    </div>
+                    <button class="eliminarProduct" id="{{this._id._id}}">Eliminar</button>
+
                 </div>
-                <button class="eliminarProduct" id="{{this._id._id}}">Eliminar</button>
 
-            </div>
+            
+            {{/each}}
 
+        </div>
+        <br>
+        <br>
+        <button class="finalizarCompra">Finalizar compra</button>
+        <br>
+        <br>
         
-        {{/each}}  
+            {{else}}
+                <p>No tienes productos agregados al carrito</p>
+            {{/if}}
     {{else}}
         <h1>{{message}}</h1>
     {{/if}}
 </div>
-<script src="/socket.io/socket.io.js"></script>
+{{#if data.products}}
 <script src="/js/cart.js"></script>
+{{/if}}

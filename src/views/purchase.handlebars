@@ -1,0 +1,54 @@
+{{#if productPurchase}}
+<div>
+    <h1>Finalizar Compra</h1>
+    <h3 class="cid" id="{{cid}}">carrito Id: {{cid}}</h3>
+
+    <h2>Productos:</h2>
+    {{#each productPurchase}}
+
+        <div class="card">
+
+            <h4>{{this._id.title}}</h4>
+            <p>Precio: ${{this._id.price}}</p>
+            <p>Cantidad: {{this.quantity}}</p>
+            <p>id: {{this._id._id}}</p>
+
+        </div>
+
+    {{/each}}
+
+    {{#if productsOutStock}}
+
+        <h2>Productos sin stock:</h2>
+
+        {{#each productsOutStock}}
+
+            <div class="card">
+
+                <h4>{{this._id.title}}</h4>
+                <p>Cantidad: {{this.quantity}}</p>
+                <p>id: {{this._id._id}}</p>
+
+            </div>
+
+        {{/each}}
+
+    {{/if}}
+
+    <br>
+    <h3>Cantidad total: {{amount}}</h3>
+    <h3>Monto Toltal: ${{priceTotal}}</h3>
+    <br>
+
+    <button id="confirmPurchase" class="confirmPurchase">Confirmar compra</button>
+    <button id="cancelPurchase" class="cancelPurchase">Cancelar compra</button>
+</div>
+<script src="/js/purchase.js"></script>
+{{else}}
+<div>
+    <h1>Finalizar Compra</h1>
+    <h3 class="cid" id="{{cid}}">carrito Id: {{cid}}</h3>
+    <h3>No hay productos con stock en tu carrito</h3>
+    <a href="/products"><button>Volver</button></a>
+</div>
+{{/if}}

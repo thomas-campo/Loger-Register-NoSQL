@@ -27,7 +27,7 @@ export default class UserManager{
     }
 
     getUserBy = (params) =>{
-        return userModel.findOne(params).lean();
+        return userModel.findOne(params);
     }
 
     getUserById=(id)=>{
@@ -38,11 +38,19 @@ export default class UserManager{
         return userModel.updateOne({email},{$set:{password:newHasedPassword}}).lean();
     }
 
+    updatePasswordById=(id,newHasedPassword)=>{
+        return userModel.findByIdAndUpdate(id,{$set:{password:newHasedPassword}}).lean();
+    }
+
     updateCartInUser=(id,cid)=>{
         return userModel.findByIdAndUpdate( id ,{ cart:cid }).lean();
     }
 
-    updateUser = (id, user) => {
-        return userModel.findByIdAndUpdate(id, { $set: cart }).lean();
+    updateUser = (id, role) => {
+        return userModel.findByIdAndUpdate(id, { role:role });
+    }
+
+    deleteUser = (id)=>{
+        return userModel.findByIdAndDelete(id).lean();
     }
 }

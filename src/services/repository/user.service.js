@@ -2,28 +2,37 @@ export default class UserRepository{
     constructor(dao){
         this.dao = dao;
     }
-    createUserService = (user) => {
+    createUser = (user) => {
         return this.dao.createUser(user)
     }
-    createCartService = (cart) => {
+    createCart = (cart) => {
         return this.dao.createCart(cart)
     }
-    getUsersService = () => {
+    getUsers = () => {
         return this.dao.getUsers()
     }
-    getUserByEmailService = (email) => {
-        return this.dao.getUserByEmail(email)
+    getUserByEmail = (email) => {
+        return this.dao.getUserByEmail(email);
     }
-    getUserByService = (params) =>{
+    getUserBy = (params) =>{
         return this.dao.getUserBy(params)
     }
-    getUserByIdService = (id) => {
+    getUserById = (id) => {
         return this.dao.getUserById(id)
     }
-    updatePasswordService = (email,newHasedPassword) => {
+    updatePassword = (email,newHasedPassword) => {
         return this.dao.updatePassword(email,newHasedPassword)
     }
-    update = (id,user) =>{
+    updatePasswordById = (id,newHasedPassword) =>{
+        return this.dao.updatePasswordById(id,newHasedPassword)
+    }
+    updateCartInUser = (id,cid) =>{
+        return this.dao.updateCartInUser( id , cid );
+    }
+    updateUser = (id,user) =>{
         return this.dao.updateUser(id,user);
+    }
+    deleteUser = (id)=>{
+        return this.dao.deleteUser(id);
     }
 }

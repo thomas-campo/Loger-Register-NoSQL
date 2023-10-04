@@ -9,14 +9,12 @@ import config from './config/config.js';
 import swaggerJsdoc from "swagger-jsdoc";
 import swaggerUiExpress from "swagger-ui-express";
 
-import ProductManager from "./dao/mongo/manager/ProductManagerMongo.js";
-
-// import viewsRouter from "./routes/views.router.js"
 import viewsRouterMongo from "./routes/views.router.js";
-// import productsRouter from "./routes/products.router.js";
+
 import productsRouterMongo from "./routes/products.router.js"
-// import cartRouter from "./routes/cart.router.js"
+
 import cartRouterMongo from "./routes/cart.router.js"
+
 import sessionsRouter from "./routes/sessions.router.js"
 import userRouter from "./routes/users.router.js"
 
@@ -43,9 +41,6 @@ const swaggerOptions = {
 
 const specs = swaggerJsdoc(swaggerOptions);
 app.use('/docs',swaggerUiExpress.serve,swaggerUiExpress.setup(specs))
-
-const productManager = new ProductManager();
-
 
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
@@ -74,11 +69,11 @@ app.use('/api/carts',cartRouterMongo);
 app.use('/api/sessions',sessionsRouter);
 app.use('/api/users',userRouter)
 
-io.on('connection',async socket=>{
-    const arrayProducts =  await productManager.getProducts();
-    io.emit('products',arrayProducts);
-    console.log("Nuevo cliente conectado");
-    socket.on("product",data=>{
-        console.log(data,"aca esta la data");
-    })
-})
+// io.on('connection',async socket=>{
+//     const arrayProducts =  await productManager.getProducts();
+//     io.emit('products',arrayProducts);
+//     console.log("Nuevo cliente conectado");
+//     socket.on("product",data=>{
+//         console.log(data,"aca esta la data");
+//     })
+// })

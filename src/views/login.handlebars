@@ -3,11 +3,11 @@
 
     <form id="loginForm">
         <label>Email</label>
-        <input name="email">
+        <input type="email" name="email">
         <br>
 
         <label>Contraseña</label>
-        <input type="password" name="password">
+        <input type="password" name="password" autocomplete="off">
         <br>
 
         <input type="submit">
@@ -16,14 +16,17 @@
 </div>
 <div>
     <p>para el admin = mail = admin@admin.com y password = 123 </p>
-    <br>
-    <a href="/restoreRequest"><button>Olvide mi Contraseña</button></a>
-    <br>
     <p>Ingresar con GitHub:</p>
     <a href="api/sessions/github"><button>GitHub</button></a>
     <br>
     <br>
+    <a href="/restoreRequest"><button>Olvide mi Contraseña</button></a>
+    <br>
+    <br>
     <a href="/register"><button>Registrarse</button></a>
+    <br>
+    <br>
+    <a href="/"><button>Inicio</button></a>
     
 </div>
 

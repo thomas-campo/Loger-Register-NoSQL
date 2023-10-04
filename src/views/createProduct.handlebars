@@ -1,8 +1,8 @@
 <div>
     <h1>Usuario: {{user.name}}</h1>
-    <p>Usario Id:</p><p id="userId">{{user.id}}</p>
-    <p>Email:</p><p id="userMail">{{user.email}}</p>
-    <p>Rol: {{user.role}}</p>
+    <p class="userId" id="{{user.id}}">Usario Id: {{user.id}}</p>
+    <p class="userEmail" id="{{user.email}}">Email: {{user.email}}</p>
+    <p class="userRole" id="{{user.role}}">Rol: {{user.role}}</p>
     <a href="/api/sessions/logout"><button>cerrar sesion</button></a>
     <a href="/products"><button>Volver</button></a>       
 </div>

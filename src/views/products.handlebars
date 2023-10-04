@@ -3,25 +3,27 @@
       <div class="row card shadow m-5">
 
         <h1>{{user.name}}</h1>
-        <p>User Id:</p><p id="userId">{{user.id}}</p> 
-        <p>Email:</p><p id="userMail">{{user.email}}</p>
+        <p class="uid" id="{{user.id}}">User Id: {{user.id}}</p> 
+        <p class="email" id="{{user.email}}">Email: {{user.email}}</p>
         <p>Rol: {{user.role}}</p>
-        <p>Carrrito Id:</p><p id="cartId" >{{cartId}}</p>
+        <p class="cid" id="{{cartId}}">Carrito: {{cartId}}</p>
         <a href="/api/sessions/logout"><button>cerrar sesion</button></a>
-        <a href="/cart/{{cartId}}"><button>ir al carrito</button></a>
-        {{!-- <a href="/api/users/premium/{{user.id}}"><button>cambiar de rol</button></a> --}}
+        <a href="/profile"><button>Ver perfil</button></a>
+        <a href="/cart/{{cartId}}"><button>Carrito</button></a>
 
       </div>
+        <br>
       <div id="listProducts">
       
         <h2>Lista de Productos</h2>
 
+        <a href="/createProduct"><button>Crear productos</button></a>
+        <br>
 
-        <a href="/createProduct"><button>Crear un nuevo producto</button></a>
         <br>
         <a href="/deleteProduct"><button>Borrar tus productos</button></a>
         <br>
-      <br>
+        <br>
 
         {{#if hasPrevPage}}
 
@@ -43,7 +45,7 @@
               
             <h2>{{this.title}}</h2>
             <p>description : {{this.description}}</p>
-            <p>price : <p class="price">{{this.price}}</p></p>
+            <p>price : {{this.price}}</p>
             <p>thumbnail : {{this.thumbnail}}</p>
             <p>code : {{this.code}}</p>
             <p>stock : {{this.stock}}</p>
@@ -80,14 +82,14 @@
   <div>
     <div class="row card shadow m-5">
 
-      <h1>{{user.name}}</h1>
-      <p>Rol: {{user.role}}</p>
-      <p>User Id:</p><p id="userId">{{user.id}}</p>
-      <p>Email:</p><p id="userMail">{{user.email}}</p>
-      <p>Carrrito Id:</p><p id="cartId" >{{cartId}}</p>
-      <a href="/api/sessions/logout"><button>cerrar sesion</button></a>
-      <a href="/cart/{{cartId}}"><button>ir al carrito:{{cartId}}</button></a>
-      {{!-- <a href="/api/users/premium/{{user.id}}"><button>cambiar de rol</button></a> --}}
+        <h1>{{user.name}}</h1>
+        <p class="uid" id="{{user.id}}">User Id: {{user.id}}</p> 
+        <p class="email" id="{{user.email}}">Email: {{user.email}}</p>
+        <p>Rol: {{user.role}}</p>
+        <p class="cid" id="{{cartId}}">Carrito: {{cartId}}</p>
+        <a href="/api/sessions/logout"><button>cerrar sesion</button></a>
+        <a href="/profile"><button>Ver perfil</button></a>
+        <a href="/cart/{{cartId}}"><button>Carrito</button></a>
 
     </div>
     <div id="listProducts">
@@ -106,14 +108,14 @@
         <a href="/products?page={{nextPage}}"><button>Siguiente</button></a>
 
       {{/if}}
-
+      
       {{#each allProducts}}
 
           <div class="cards">
               
               <h2>{{this.title}}</h2>
               <p>description : {{this.description}}</p>
-              <p>price : <p class="price">{{this.price}}</p></p>
+              <p>price : {{this.price}}</p>
               <p>thumbnail : {{this.thumbnail}}</p>
               <p>code : {{this.code}}</p>
               <p>stock : {{this.stock}}</p>
@@ -145,5 +147,4 @@
 
   </div>
 {{/if}}
-<script src="/socket.io/socket.io.js"></script>
 <script src="/js/product.js"></script>

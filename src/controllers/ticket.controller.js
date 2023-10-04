@@ -1,78 +1,77 @@
-import TicketManager from "../dao/mongo/manager/TicketManagerMongo.js";
-
-const ticketManager = new TicketManager();
+import { TicketsService } from "../services/service";
 
 const getTicketsController = async (req, res) => {
     try {
-        const tickets = await ticketManager.getTickets()
+        const tickets = await TicketsService.getTickets()
         return res.sendSuccess(tickets)
 
     } catch (error) {
-        return res.sendInternalError(error)
+        return res.status(500).send(error);
     }
 };
 
 const getTicketByIdController = async (req, res) => {
-    const tid = req.params.tid
     try {
-        const ticket = await ticketManager.getTicketByUserId(tid)
-        return res.sendSuccessWithPayload(ticket)
+        const tid = req.params.tid
+        if(!tid) return res.status(404);
+        const ticket = await TicketsService.getTicketByUserId(tid);
+        if(!ticket) return res.status(404);
+        return res.sendSuccess(ticket);
 
     } catch (error) {
-        return res.sendInternalError(error)
+        return res.status(500).send(error);
     }
 };
 
 const getTicketByUserIdController = async (req, res) => {
     try {
         const uid = req.params.user._id
-        const ticket = await ticketManager.getTicketByUserId(uid)
+        if(!uid) return res.status(404);
+        const ticket = await TicketsService.getTicketByUserId(uid)
         return res.sendSuccess(ticket)
-
     } catch (error) {
-        return res.sendInternalError(error)
+        return res.status(500).send(error);
     }
 };
 
 const postTicketController = async (req, res) => {
     try {
-        const uid = req.user.id
         const cid = req.params.cartID
         const ticketBody = req.body
         const ticket = {
-            user: uid,
             cart : cid,
             ...ticketBody
         }
         
-        
         return res.sendSuccess(ticket)
 
     } catch (error) {
-        return res.sendInternalError(error)
+        return res.status(500).send(error);
     }
 };
 
 const deleteTicketController = async (req, res) => {
     try {
-        const tid = req.params.tid
-        const tickets = await ticketManager.deleteTicket(tid)
+        const tid = req.params.tid;
+        if(!tid) return res.status(404);
+        const tickets = await TicketsService.deleteTicket(tid)
         return res.sendSuccess(tickets)
 
     } catch (error) {
-        return res.sendInternalError(error)
+        return res.status(500).send(error);
     }
 };
 
 const updateTicketController = async (req, res) => {
     try {
-        const tid = req.params.tid
+        const tid = req.params.tid;
+        if(!tid) return res.status(404);
         const ticket = req.params.body
-        const tickets = await ticketManager.updateTicket(tid, ticket)
-        return sendSuccess.send(tickets)
+        const tickets = await TicketsService.updateTicket(tid, ticket)
+        return res.sendSuccess.send(tickets)
 
     } catch (error) {
-        return res.sendInternalError(error)
+        return res.status(500).send(error);
     }
 };
 

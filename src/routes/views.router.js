@@ -4,9 +4,11 @@ import viewsController from "../controllers/views.controller.js";
 
 const router = Router();
 
-router.get('/',privacity('PUBLIC'),viewsController.getHome);
+router.get('/',privacity('NO_AUTHENTICATED'),viewsController.getHome);
 
 router.get('/products',privacity('PRIVATE'),viewsController.getProducts);
+
+router.get('/users',privacity('PRIVATE'),viewsController.getUsers);
 
 router.get('/cart/:cid',privacity('PRIVATE'),viewsController.getCartById);
 
@@ -20,10 +22,12 @@ router.get('/restoreRequest',privacity('PUBLIC'),viewsController.getRestoreReque
 
 router.get('/restorePassword',privacity('PUBLIC'),viewsController.getRestorePassword);
 
-router.get('/createProduct',viewsController.getCreateProduct);
+router.get('/createProduct',privacity('PRIVATE'),viewsController.getCreateProduct);
 
-router.get('/updateProduct',viewsController.getUpdateProduct);
+router.get('/updateProduct',privacity('PRIVATE'),viewsController.getUpdateProduct);
 
-router.get('/deleteProduct',viewsController.getDeleteProduct);
+router.get('/deleteProduct',privacity('PRIVATE'),viewsController.getDeleteProduct);
+
+router.get('/purchase/:cid',privacity('PRIVATE'),viewsController.getPuncharse);
 
 export default router;

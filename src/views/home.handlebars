@@ -1,6 +1,6 @@
 <div>
-    <button><a href="/login">iniciar sesion</a></button>
-    <button><a href="/register">registrarse</a></button>
+    <a href="/login"><button>iniciar sesion</button></a>
+    <a href="/register"><button>registrarse</button></a>
 </div>
 <div>
     <h2>Lista de Productos</h2>
@@ -11,13 +11,13 @@
                 
                 <h2>{{this.title}}</h2>
                 <p>description : {{this.description}}</p>
-                <p>price : <p class="price">{{this.price}}</p></p>
+                <p>price : {{this.price}}</p>
                 <p>thumbnail : {{this.thumbnail}}</p>
                 <p>code : {{this.code}}</p>
                 <p>stock : {{this.stock}}</p>
                 <p>id: {{this.id}}</p>
 
-                <button class="agregarAlCarrito" id={{this.id}}>agregar al carrito</button>
+                <a href="/login"><button>agregar al carrito</button></a>
 
             </div>
         {{/each}}
@@ -36,5 +36,3 @@
         {{/if}}
 
 </div>
-<script src="/socket.io/socket.io.js"></script>
-<script src="/js/product.js"></script>

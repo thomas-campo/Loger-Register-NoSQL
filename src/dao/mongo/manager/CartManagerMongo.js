@@ -15,16 +15,12 @@ export default class CartManager{
         return cartModel.find().lean();
     }
 
-    getCartById=(cid)=>{//trae los productos del carrito, buscando por el id del carrito
-        return cartModel.findOne({ _id: cid }).lean()
+    getCartById=async(cid)=>{//trae los productos del carrito, buscando por el id del carrito
+        return await cartModel.findOne({ _id: cid }).lean()
     }
 
     getCartsByUser = async (uid) => {
-        try {
-            return await cartModel.find({user: uid})
-        } catch (error) {
-            return error
-        }
+        return await cartModel.find({user: uid}).lean();
     }
     
     addProductInCart = async (cid, productBody) => {
@@ -36,7 +32,6 @@ export default class CartManager{
                 await cartModel.updateOne(
                     { _id: cid, "products._id": productBody._id },
                     { $inc: { "products.$.quantity": productBody.quantity } })
-                    console.log("if")
                 return await this.getCartById(cid);
             }
 
@@ -50,7 +45,6 @@ export default class CartManager{
                         }
                     }
                 })
-                console.log("await")
             return await this.getCartById(cid);
         }
         catch (err) {
@@ -70,9 +64,18 @@ export default class CartManager{
 
     }
 
+    deleteCart = async (cid) => {
+        try {
+            return await cartModel.findByIdAndDelete(cid);
+        } catch (err) {
+            console.log(err);
+            return err
+        }
+    }
+
     updateProductsToCart = async (cid, products) => {
         try {
-            return await cartModel.findOneAndUpdate({ _id: cid },{ products })
+            return await cartModel.findOneAndUpdate({ _id: cid },{ products }).lean();
         } catch (err) {
             console.log(err.message);
             return err

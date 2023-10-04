@@ -5,5 +5,8 @@ export default {
     },
     restore: {
         subject:"Restaurar Contraseña"
+    },
+    ticket: {
+        subject:"Ticket de Compra"
     }
 }

@@ -3,7 +3,7 @@ import ticketModel from "../models/ticket.js";
 export default class TicketManager {
     
     createTicket = async (ticket) => {         
-        return await ticketModel.create(ticket)
+        return await ticketModel.create(ticket);
     }
 
     getTickets = async () => {

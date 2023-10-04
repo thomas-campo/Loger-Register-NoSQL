@@ -19,6 +19,11 @@ form.addEventListener('submit',async (event)=>{
   })
   const responseData = await response.json();
   if(responseData.status==="success"){
-    window.location.replace('/login');//redirijo a los productos
+    swal.fire("Contraseña modificada");
+    window.addEventListener("click", ()=>{
+      window.location.replace(`/products`);
+  })
+  }else{
+    swal.fire("Error al actualizar la contraseña, modifique la contraseña");
   }
 })

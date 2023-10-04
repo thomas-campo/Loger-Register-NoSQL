@@ -1,0 +1,27 @@
+<div id="listUsers">
+    <div class="row card shadow m-5">
+        <h2>Usuario: {{user.name}}</h2>
+        <p>Usario Id:{{user.id}}</p>
+        <p>Email:{{user.email}}</p>
+        <p>Rol: {{user.role}}</p>
+        <a href="/api/sessions/logout"><button>cerrar sesion</button></a>
+        <a href="/products"><button>Volver</button></a>
+    </div>
+    {{#if users}}
+        <h1>Lista de usuarios</h1>
+    {{/if}}
+
+    {{#each users}}
+        <div class="cardUser">
+            <P>Nombre: {{this.first_name}}</P>
+            <p>Apellido: {{this.last_name}}</p>
+            <p class="email" id="{{this.email}}">Mail: {{this.email}}</p>
+            <p>Rol: {{this.role}}</p>
+            <button class="buttonDeleteUser" id={{this._id}}>Borrar usuario</button>
+            <button class="buttonUpdateRole" id={{this._id}}>cambiar rol</button>
+        </div>
+        <br>
+    {{/each}}
+    
+</div>
+<script src="/js/users.js"></script>

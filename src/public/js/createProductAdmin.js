@@ -1,5 +1,5 @@
 const form = document.getElementById('createProductForm');
-const userId = document.getElementById("userId").textContent;
+const userId = document.querySelector(".userId").id;
 
 form.addEventListener('submit',async (event)=>{
   event.preventDefault();
@@ -18,6 +18,6 @@ form.addEventListener('submit',async (event)=>{
     form.reset()
     swal.fire("Producto creado")
   }else{
-    swal.fire("Error al crear el product")
+    swal.fire("Error al crear el product, modifique el formuario")
   }
 })

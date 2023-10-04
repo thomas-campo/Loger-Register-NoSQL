@@ -140,18 +140,18 @@ const getDeleteProduct = async(req,res) =>{
         const { page = 1 } = req.query;
         const { docs, hasPrevPage, hasNextPage, prevPage, nextPage, ...rest } = await ProdModel.paginate({}, { page, limit: 10, lean: true })
         const products = docs;
-        if(userData.role==="premium"){//solo los productos que el creo
+        if(userData.role==="premium"){
             const rolPremium = true;
-            const arrayProducts = await ProductService.getProducts();
-            return res.render("deleteproduct", { allProducts: products, page: rest.page, hasPrevPage, hasNextPage, prevPage, nextPage, user: userData, rolPremium });
+            return res.render("deleteproduct", { allProducts: products, page, hasPrevPage, hasNextPage, prevPage, nextPage, user: userData, rolPremium });
         }
         if(userData.role==="admin"){
             const rolAdmin = true;
-            return res.render("deleteproduct", { allProducts: products, page: rest.page, hasPrevPage, hasNextPage, prevPage, nextPage, user: userData, rolAdmin });
+            return res.render("deleteproduct", { allProducts: products, page, hasPrevPage, hasNextPage, prevPage, nextPage, user: userData, rolAdmin });
         }
         res.render("No estas autorizado");
     } catch (error) {
         console.log(error);
+        res.send({status:505,error:"Error viewDeleteProduct"})
     }
 }
 

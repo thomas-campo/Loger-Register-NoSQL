@@ -134,7 +134,6 @@ const getUpdateProduct = (req,res)=>{
 }
 
 const getDeleteProduct = async(req,res) =>{
-    try {
         if(!req.session.user) return res.redirect('/login');
         const userData = req.session.user;
         const { page = 1 } = req.query;
@@ -149,10 +148,6 @@ const getDeleteProduct = async(req,res) =>{
             return res.render("deleteproduct", { allProducts: products, page, hasPrevPage, hasNextPage, prevPage, nextPage, user: userData, rolAdmin });
         }
         res.render("noAuth");
-    } catch (error) {
-        console.log(error);
-        res.send({status:505,error:"Error viewDeleteProduct"})
-    }
 }
 
 const getPuncharse = async(req,res)=>{

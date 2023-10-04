@@ -134,6 +134,7 @@ const getUpdateProduct = (req,res)=>{
 }
 
 const getDeleteProduct = async(req,res) =>{
+    try {
         if(!req.session.user) return res.redirect('/login');
         const userData = req.session.user;
         const { page = 1 } = req.query;
@@ -141,13 +142,17 @@ const getDeleteProduct = async(req,res) =>{
         const products = docs;
         if(userData.role==="premium"){
             const rolPremium = true;
-            return res.render("deleteproduct", { allProducts: products, page, hasPrevPage, hasNextPage, prevPage, nextPage, user: userData, rolPremium });
+            return res.render("deleteProduct", { allProducts: products, page, hasPrevPage, hasNextPage, prevPage, nextPage, user: userData, rolPremium });
         }
         if(userData.role==="admin"){
             const rolAdmin = true;
-            return res.render("deleteproduct", { allProducts: products, page, hasPrevPage, hasNextPage, prevPage, nextPage, user: userData, rolAdmin });
+            return res.render("deleteProduct", { allProducts: products, page, hasPrevPage, hasNextPage, prevPage, nextPage, user: userData, rolAdmin });
         }
         res.render("noAuth");
+    } catch (error) {
+        console.log(error);
+        res.send({status:505,error:"Error viewDeleteProduct"})
+    }
 }
 
 const getPuncharse = async(req,res)=>{
